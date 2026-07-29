@@ -511,40 +511,19 @@ async function copyAiPrompt() {
   }
 }
 
-function copyTimerValueToClipboard(value) {
-  const field = document.createElement("textarea");
-  field.value = value;
-  field.setAttribute("readonly", "");
-  field.style.position = "fixed";
-  field.style.opacity = "0";
-  field.style.pointerEvents = "none";
-  field.style.fontSize = "16px";
-  document.body.appendChild(field);
-  field.select();
-  field.setSelectionRange(0, field.value.length);
-
-  let copied = false;
-  try {
-    copied = document.execCommand("copy");
-  } catch {
-    copied = false;
-  } finally {
-    field.remove();
-  }
-  return copied;
-}
-
 function startDeviceTimer() {
-  const shortcutName = "まなび通知";
-  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=clipboard`;
-  if (!copyTimerValueToClipboard(String(selectedMinutes))) {
-    showToast("時間を渡せませんでした。Safariで再度お試しください");
+  const supportedMinutes = new Set([5, 10, 15, 25]);
+  if (!supportedMinutes.has(selectedMinutes)) {
+    showToast("この時間のiPhoneタイマーには対応していません");
     return;
   }
+
+  const shortcutName = `まなび通知${selectedMinutes}分`;
+  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}`;
   deviceTimerRequested = true;
-  $("#start-device-timer").textContent = `✓ ${selectedMinutes}分を渡しました`;
+  $("#start-device-timer").textContent = `✓ ${selectedMinutes}分通知を起動`;
   $("#start-device-timer").classList.add("requested");
-  showToast(`${selectedMinutes}分をショートカットへ渡します`);
+  showToast(`${shortcutName}を起動します`);
   window.location.href = shortcutUrl;
 }
 
