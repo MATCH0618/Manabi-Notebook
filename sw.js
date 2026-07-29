@@ -1,4 +1,4 @@
-const CACHE = "manabi-partner-v4";
+const CACHE = "manabi-partner-v5";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
