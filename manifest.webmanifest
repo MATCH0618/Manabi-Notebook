@@ -1,0 +1,18 @@
+{
+  "name": "まなびの相棒手帳",
+  "short_name": "相棒手帳",
+  "description": "相棒と一緒に、病院保健師の学びをやさしく続ける学習手帳。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffaf5",
+  "theme_color": "#fff8f2",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
