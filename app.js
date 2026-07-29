@@ -1,31 +1,38 @@
 const CATEGORIES = {
-  infection: { name: "感染対策", icon: "🫧", color: "#dceee4" },
-  discharge: { name: "退院・地域連携", icon: "🏡", color: "#fde6d2" },
-  guidance: { name: "健康支援", icon: "🍎", color: "#f8d8d6" },
-  mental: { name: "メンタルヘルス", icon: "🌙", color: "#e8e1f2" },
-  teamwork: { name: "多職種連携", icon: "🤝", color: "#f8e7ad" },
-  system: { name: "制度・社会資源", icon: "📚", color: "#dbeaf3" }
+  metabolic: { name: "血圧・代謝", icon: "🫀", color: "#f8d8d6" },
+  lipidLiver: { name: "脂質・肝臓", icon: "🧪", color: "#f8e7ad" },
+  womensHealth: { name: "女性の健康", icon: "🎗️", color: "#fde6d2" },
+  upperGi: { name: "胃・十二指腸", icon: "🍵", color: "#dceee4" },
+  colon: { name: "大腸", icon: "🔎", color: "#dbeaf3" },
+  renalBlood: { name: "腎臓・血液", icon: "🩸", color: "#e8e1f2" },
+  habits: { name: "生活習慣", icon: "🌿", color: "#e4efd6" }
 };
 
 const CARDS = [
-  { id: "standard", category: "infection", title: "標準予防策" },
-  { id: "route", category: "infection", title: "感染経路別予防策" },
-  { id: "exposure", category: "infection", title: "針刺し・曝露時対応" },
-  { id: "vaccination", category: "infection", title: "予防接種と感染管理" },
-  { id: "discharge-plan", category: "discharge", title: "退院支援の流れ" },
-  { id: "home-care", category: "discharge", title: "在宅療養への移行" },
-  { id: "community", category: "discharge", title: "地域資源とのつなぎ方" },
-  { id: "lifestyle", category: "guidance", title: "生活習慣への支援" },
-  { id: "interview", category: "guidance", title: "保健面談の進め方" },
-  { id: "health-literacy", category: "guidance", title: "ヘルスリテラシー" },
-  { id: "stress", category: "mental", title: "ストレスへの気づき" },
-  { id: "return-work", category: "mental", title: "復職・就労支援" },
-  { id: "crisis", category: "mental", title: "危機介入の基本" },
-  { id: "conference", category: "teamwork", title: "多職種カンファレンス" },
-  { id: "coordination", category: "teamwork", title: "院内外の連携調整" },
-  { id: "nursing-care", category: "system", title: "介護保険の基本" },
-  { id: "welfare", category: "system", title: "使える社会資源" },
-  { id: "privacy", category: "system", title: "個人情報と記録" }
+  { id: "hypertension", category: "metabolic", title: "高血圧｜判定・受診勧奨・生活指導" },
+  { id: "diabetes", category: "metabolic", title: "糖尿病｜血糖・HbA1cの見方" },
+  { id: "uric-acid", category: "metabolic", title: "尿酸値｜高値・痛風予防" },
+  { id: "lifestyle-risk", category: "metabolic", title: "生活習慣病｜リスクの重なりと面談" },
+  { id: "high-ldl", category: "lipidLiver", title: "LDLコレステロール高値" },
+  { id: "low-hdl", category: "lipidLiver", title: "HDLコレステロール低値" },
+  { id: "low-total-cholesterol", category: "lipidLiver", title: "総コレステロール低値" },
+  { id: "high-triglycerides", category: "lipidLiver", title: "中性脂肪高値" },
+  { id: "low-triglycerides", category: "lipidLiver", title: "中性脂肪低値" },
+  { id: "fatty-liver", category: "lipidLiver", title: "脂肪肝｜原因と生活改善" },
+  { id: "osteoporosis", category: "womensHealth", title: "骨粗鬆症｜リスクと予防" },
+  { id: "cervical-cancer", category: "womensHealth", title: "子宮頸がん検診｜結果と精密検査" },
+  { id: "breast-cancer", category: "womensHealth", title: "乳がん検診｜結果と精密検査" },
+  { id: "gastric-polyp", category: "upperGi", title: "胃・十二指腸ポリープ" },
+  { id: "peptic-ulcer", category: "upperGi", title: "胃・十二指腸潰瘍" },
+  { id: "reflux", category: "upperGi", title: "逆流性食道炎" },
+  { id: "h-pylori", category: "upperGi", title: "ピロリ菌｜検査・除菌・フォロー" },
+  { id: "fecal-occult-blood", category: "colon", title: "便潜血陽性｜精密検査へのつなぎ方" },
+  { id: "kidney-stone", category: "renalBlood", title: "腎結石｜症状・再発予防" },
+  { id: "renal-cyst", category: "renalBlood", title: "腎嚢胞｜所見と経過観察" },
+  { id: "urinary-lesion", category: "renalBlood", title: "腎・尿路のポリープ・腫瘤所見" },
+  { id: "anemia", category: "renalBlood", title: "貧血｜数値・原因・受診の目安" },
+  { id: "smoking", category: "habits", title: "喫煙習慣｜禁煙支援の進め方" },
+  { id: "alcohol", category: "habits", title: "飲酒習慣｜リスク評価と節酒支援" }
 ];
 
 const MASTERY_LABELS = ["未着手", "触れてみた", "だいたい分かった", "説明できそう", "仕事で活かせそう"];
@@ -35,7 +42,7 @@ const defaultState = {
   cards: {},
   sessions: [],
   xp: 0,
-  recommendations: ["standard", "discharge-plan", "interview"]
+  recommendations: ["hypertension", "high-ldl", "smoking"]
 };
 
 let state = loadState();
@@ -52,7 +59,22 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return { ...defaultState, ...saved, cards: saved?.cards || {}, sessions: saved?.sessions || [] };
+    const validIds = new Set(CARDS.map((card) => card.id));
+    const cards = Object.fromEntries(
+      Object.entries(saved?.cards || {}).filter(([id]) => validIds.has(id))
+    );
+    const sessions = (saved?.sessions || []).filter((session) => validIds.has(session.cardId));
+    const recommendations = (saved?.recommendations || []).filter((id) => validIds.has(id));
+
+    return {
+      ...defaultState,
+      ...saved,
+      cards,
+      sessions,
+      recommendations: recommendations.length === 3
+        ? recommendations
+        : [...defaultState.recommendations]
+    };
   } catch {
     return structuredClone(defaultState);
   }
@@ -290,6 +312,7 @@ function beginTimer(minutes) {
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
   $("#timer-card-title").textContent = currentCard.title;
+  $("#ai-prompt-text").value = buildAiPrompt();
   updateTimerDisplay();
   clearInterval(timerId);
   timerId = setInterval(() => {
@@ -305,6 +328,51 @@ function updateTimerDisplay() {
   $("#timer-display").textContent = `${minutes}:${seconds}`;
 }
 
+function buildAiPrompt() {
+  const category = CATEGORIES[currentCard.category];
+  return `あなたは、人間ドック後の健康相談を担当する保健師向けの学習コーチです。
+
+【今回のテーマ】
+${currentCard.title}
+【分野】${category.name}
+【学習時間】${selectedMinutes}分
+
+日本の成人健診・人間ドック後の健康相談を想定し、次の順で実務的に教えてください。
+1. 検査結果・所見の基本的な見方
+2. 主な原因、危険因子、関連する病気
+3. 健康相談で確認する質問
+4. 本人へ伝わりやすい説明例
+5. 生活改善の支援ポイント
+6. 受診・精密検査を勧める際の考え方と見逃せない症状
+7. 相談場面を想定したケース問題1問
+8. 最後に理解確認クイズ3問
+
+指定時間に収まる分量にし、専門用語には短い説明を付けてください。
+判定値や対応がガイドライン・年齢・性別・施設基準で異なる場合は、単一の数値で断定せず違いを明示してください。
+個人の診断や治療指示は行わず、最新の公的ガイドラインと勤務先の手順を確認すべき点も示してください。
+追加質問はせず、今すぐ学習を開始してください。`; 
+}
+
+async function copyAiPrompt() {
+  const field = $("#ai-prompt-text");
+  const prompt = field.value || buildAiPrompt();
+  field.value = prompt;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(prompt);
+    } else {
+      field.focus();
+      field.select();
+      if (!document.execCommand("copy")) throw new Error("copy failed");
+    }
+    showToast("AI学習プロンプトをコピーしました");
+  } catch {
+    field.focus();
+    field.select();
+    showToast("本文を長押ししてコピーしてください");
+  }
+}
 function showResult() {
   clearInterval(timerId);
   $("#study-timer").hidden = true;
@@ -357,6 +425,7 @@ document.addEventListener("click", (event) => {
 
 $("#pet-shortcut").addEventListener("click", () => switchPage("pet"));
 $("#finish-now").addEventListener("click", showResult);
+$("#copy-ai-prompt").addEventListener("click", copyAiPrompt);
 $("#shuffle-recommendations").addEventListener("click", () => {
   const shuffled = [...CARDS].sort(() => Math.random() - .5).slice(0, 3).map((card) => card.id);
   state.recommendations = shuffled;

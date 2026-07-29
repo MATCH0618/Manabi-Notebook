@@ -243,3 +243,38 @@ dialog::backdrop { background: rgba(73, 60, 54, .42); backdrop-filter: blur(5px)
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.dialog-card { max-height: calc(100dvh - 32px); }
+.ai-study-box {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid #eadfd7;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fffaf5, #fff);
+  text-align: left;
+}
+.ai-study-box h3 { margin: 3px 0 4px; font-size: 15px; }
+.ai-study-box p { margin: 0 0 10px; line-height: 1.6; }
+.copy-prompt-button {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 10px;
+  background: #5f8f79;
+  color: white;
+  font-weight: 800;
+  font-size: 13px;
+}
+#ai-prompt-text {
+  display: block;
+  width: 100%;
+  height: 92px;
+  margin-top: 9px;
+  padding: 10px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  font: 11px/1.55 "M PLUS Rounded 1c", sans-serif;
+}
