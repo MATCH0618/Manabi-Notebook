@@ -51,8 +51,14 @@ let selectedMinutes = 10;
 let timerId = null;
 let timerSeconds = 0;
 let timerEndsAt = null;
+let timerStartedAt = null;
+let recordedSeconds = 0;
 let activeFilter = "all";
 let calendarCursor = new Date();
+let chartPeriod = "day";
+let chartOffset = 0;
+let historyVisibleCount = 8;
+let deviceTimerRequested = false;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -118,6 +124,30 @@ function formatShortDate(iso) {
   return `${date.getMonth() + 1}/${date.getDate()}`;
 }
 
+function sessionSeconds(session) {
+  const seconds = Number(session.seconds);
+  if (Number.isFinite(seconds) && seconds >= 0) return seconds;
+  return Math.max(0, Number(session.minutes) || 0) * 60;
+}
+
+function totalSessionSeconds(sessions = state.sessions) {
+  return sessions.reduce((sum, session) => sum + sessionSeconds(session), 0);
+}
+
+function roundedMinutes(seconds) {
+  return Math.max(0, Math.round(seconds / 60));
+}
+
+function formatDuration(seconds, includeSeconds = false) {
+  const safeSeconds = Math.max(0, Math.round(seconds));
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const restSeconds = safeSeconds % 60;
+  if (includeSeconds && hours === 0 && restSeconds > 0) return `${minutes}分${restSeconds}秒`;
+  if (hours > 0) return `${hours}時間${minutes ? `${minutes}分` : ""}`;
+  return `${Math.round(safeSeconds / 60)}分`;
+}
+
 function renderAll() {
   renderHeader();
   renderHome();
@@ -138,7 +168,7 @@ function renderHome() {
   const hour = new Date().getHours();
   $("#hero-greeting").textContent = hour < 11 ? "おはようございます" : hour < 18 ? "おつかれさまです" : "おかえりなさい";
   $("#streak-count").textContent = getStreak();
-  $("#total-minutes").textContent = state.sessions.reduce((sum, session) => sum + session.minutes, 0);
+  $("#total-minutes").textContent = roundedMinutes(totalSessionSeconds());
   $("#week-count").textContent = sessionsThisWeek().length;
 
   const list = $("#recommendation-list");
@@ -216,11 +246,11 @@ function renderSkills() {
 }
 
 function renderJournal() {
-  const totalMinutes = state.sessions.reduce((sum, session) => sum + session.minutes, 0);
-  $("#journal-minutes").textContent = `${totalMinutes}分`;
+  $("#journal-minutes").textContent = formatDuration(totalSessionSeconds());
   renderCalendar();
+  renderStudyChart();
 
-  const recent = [...state.sessions].reverse().slice(0, 6);
+  const recent = [...state.sessions].reverse().slice(0, historyVisibleCount);
   $("#history-list").innerHTML = recent.length ? recent.map((session) => {
     const card = CARDS.find((item) => item.id === session.cardId);
     const category = CATEGORIES[card.category];
@@ -228,9 +258,10 @@ function renderJournal() {
       <article class="history-item">
         <span class="card-icon" style="background:${category.color};width:36px;height:36px">${category.icon}</span>
         <div><h3>${card.title}</h3><p>${category.name} · ${MASTERY_LABELS[session.mastery]}</p></div>
-        <time>${formatShortDate(session.date)}<br>${session.minutes}分</time>
+        <time>${formatShortDate(session.date)}<br>${formatDuration(sessionSeconds(session), true)}</time>
       </article>`;
   }).join("") : `<p class="history-empty">最初のカードを学ぶと、ここに自動で記録されます。</p>`;
+  $("#history-more").hidden = historyVisibleCount >= state.sessions.length;
 }
 
 function renderCalendar() {
@@ -256,6 +287,102 @@ function renderCalendar() {
   $("#month-sessions").textContent = `${monthCount}回`;
 }
 
+function startOfWeek(date = new Date()) {
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  return start;
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function addMonths(date, months) {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}
+
+function chartBuckets() {
+  const now = new Date();
+  if (chartPeriod === "day") {
+    const start = addDays(startOfWeek(now), chartOffset * -7);
+    return Array.from({ length: 7 }, (_, index) => {
+      const bucketStart = addDays(start, index);
+      return {
+        start: bucketStart,
+        end: addDays(bucketStart, 1),
+        label: ["月", "火", "水", "木", "金", "土", "日"][index],
+        detail: `${bucketStart.getMonth() + 1}/${bucketStart.getDate()}`
+      };
+    });
+  }
+
+  if (chartPeriod === "week") {
+    const currentWeek = startOfWeek(now);
+    const start = addDays(currentWeek, -(5 + chartOffset * 6) * 7);
+    return Array.from({ length: 6 }, (_, index) => {
+      const bucketStart = addDays(start, index * 7);
+      return {
+        start: bucketStart,
+        end: addDays(bucketStart, 7),
+        label: `${bucketStart.getMonth() + 1}/${bucketStart.getDate()}`,
+        detail: "週"
+      };
+    });
+  }
+
+  const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const start = addMonths(currentMonth, -(5 + chartOffset * 6));
+  return Array.from({ length: 6 }, (_, index) => {
+    const bucketStart = addMonths(start, index);
+    return {
+      start: bucketStart,
+      end: addMonths(bucketStart, 1),
+      label: `${bucketStart.getMonth() + 1}月`,
+      detail: String(bucketStart.getFullYear())
+    };
+  });
+}
+
+function renderStudyChart() {
+  const buckets = chartBuckets().map((bucket) => {
+    const seconds = state.sessions
+      .filter((session) => {
+        const studiedAt = new Date(session.date);
+        return studiedAt >= bucket.start && studiedAt < bucket.end;
+      })
+      .reduce((sum, session) => sum + sessionSeconds(session), 0);
+    return { ...bucket, seconds };
+  });
+  const maxSeconds = Math.max(...buckets.map((bucket) => bucket.seconds), 60);
+  const rangeStart = buckets[0].start;
+  const rangeEnd = addDays(buckets[buckets.length - 1].end, -1);
+  const rangeLabel = chartPeriod === "month"
+    ? `${rangeStart.getFullYear()}年${rangeStart.getMonth() + 1}月〜${buckets[buckets.length - 1].start.getFullYear()}年${buckets[buckets.length - 1].start.getMonth() + 1}月`
+    : `${rangeStart.getFullYear()}/${rangeStart.getMonth() + 1}/${rangeStart.getDate()}〜${rangeEnd.getFullYear()}/${rangeEnd.getMonth() + 1}/${rangeEnd.getDate()}`;
+
+  $("#chart-range").textContent = rangeLabel;
+  $("#chart-total").textContent = formatDuration(buckets.reduce((sum, bucket) => sum + bucket.seconds, 0));
+  $("#chart-next").disabled = chartOffset === 0;
+  $$("[data-chart-period]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.chartPeriod === chartPeriod);
+  });
+  $("#study-chart").style.gridTemplateColumns = `repeat(${buckets.length}, minmax(0, 1fr))`;
+  $("#study-chart").innerHTML = buckets.map((bucket) => {
+    const height = bucket.seconds ? Math.max(8, Math.round((bucket.seconds / maxSeconds) * 100)) : 3;
+    const duration = formatDuration(bucket.seconds);
+    return `
+      <button type="button" class="chart-bar-item" data-chart-label="${bucket.label} ${duration}" aria-label="${bucket.detail} ${bucket.label} ${duration}">
+        <span class="bar-value">${bucket.seconds ? duration : ""}</span>
+        <span class="bar-track"><i style="height:${height}%"></i></span>
+        <strong>${bucket.label}</strong>
+        <small>${bucket.detail}</small>
+      </button>`;
+  }).join("");
+}
+
 function renderPet() {
   const level = getLevel();
   const currentXp = state.xp % 100;
@@ -269,10 +396,7 @@ function renderPet() {
 }
 
 function startOfWeekDates() {
-  const today = new Date();
-  const mondayOffset = (today.getDay() + 6) % 7;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - mondayOffset);
+  const monday = startOfWeek();
   return Array.from({ length: 7 }, (_, index) => {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
@@ -310,10 +434,16 @@ function openStudy(cardId) {
 function beginTimer(minutes) {
   selectedMinutes = minutes;
   timerSeconds = minutes * 60;
-  timerEndsAt = Date.now() + timerSeconds * 1000;
+  timerStartedAt = Date.now();
+  timerEndsAt = timerStartedAt + timerSeconds * 1000;
+  recordedSeconds = 0;
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
   $("#timer-card-title").textContent = currentCard.title;
+  $("#device-timer-minutes").textContent = `${selectedMinutes}分`;
+  $("#start-device-timer").textContent = "⏱ iPhoneタイマーも開始";
+  $("#start-device-timer").classList.remove("requested");
+  deviceTimerRequested = false;
   $("#ai-prompt-text").value = buildAiPrompt();
   updateTimerDisplay();
   clearInterval(timerId);
@@ -321,15 +451,18 @@ function beginTimer(minutes) {
 }
 
 function updateTimerFromClock() {
-  if (!timerEndsAt) return;
-  timerSeconds = Math.max(0, Math.ceil((timerEndsAt - Date.now()) / 1000));
+  if (!timerEndsAt || !timerStartedAt) return;
+  timerSeconds = Math.ceil((timerEndsAt - Date.now()) / 1000);
   updateTimerDisplay();
-  if (timerSeconds <= 0) showResult();
 }
 function updateTimerDisplay() {
-  const minutes = Math.floor(timerSeconds / 60);
-  const seconds = String(timerSeconds % 60).padStart(2, "0");
-  $("#timer-display").textContent = `${minutes}:${seconds}`;
+  const isOvertime = timerSeconds <= 0;
+  const shownSeconds = Math.abs(timerSeconds);
+  const minutes = Math.floor(shownSeconds / 60);
+  const seconds = String(shownSeconds % 60).padStart(2, "0");
+  $("#timer-display").textContent = `${isOvertime ? "+" : ""}${minutes}:${seconds}`;
+  $("#timer-status").textContent = isOvertime ? "延長中" : "のこり";
+  $(".timer-ring").classList.toggle("overtime", isOvertime);
 }
 
 function buildAiPrompt() {
@@ -377,27 +510,49 @@ async function copyAiPrompt() {
     showToast("本文を長押ししてコピーしてください");
   }
 }
+
+function startDeviceTimer() {
+  const shortcutName = "まなび通知";
+  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=text&text=${encodeURIComponent(String(selectedMinutes))}`;
+  deviceTimerRequested = true;
+  $("#start-device-timer").textContent = `✓ ${selectedMinutes}分で起動しました`;
+  $("#start-device-timer").classList.add("requested");
+  showToast("ショートカットへ移動します");
+  window.location.href = shortcutUrl;
+}
+
 function showResult() {
+  if (!timerStartedAt) return;
+  recordedSeconds = Math.max(1, Math.round((Date.now() - timerStartedAt) / 1000));
   clearInterval(timerId);
   timerEndsAt = null;
+  timerStartedAt = null;
   $("#study-timer").hidden = true;
   $("#study-result").hidden = false;
+  $("#recorded-time").textContent = `学習時間 ${formatDuration(recordedSeconds, true)} を記録します`;
 }
 
 function completeStudy(mastery) {
   const existing = cardProgress(currentCard.id);
+  const actualMinutes = Math.max(1, roundedMinutes(recordedSeconds));
   state.cards[currentCard.id] = {
     mastery: Math.max(existing.mastery, mastery),
-    minutes: existing.minutes + selectedMinutes,
+    minutes: existing.minutes + actualMinutes,
     sessions: existing.sessions + 1,
     lastStudied: new Date().toISOString()
   };
-  state.sessions.push({ cardId: currentCard.id, minutes: selectedMinutes, mastery, date: new Date().toISOString() });
-  state.xp += selectedMinutes + mastery * 5;
+  state.sessions.push({
+    cardId: currentCard.id,
+    minutes: actualMinutes,
+    seconds: recordedSeconds,
+    mastery,
+    date: new Date().toISOString()
+  });
+  state.xp += actualMinutes + mastery * 5;
   saveState();
   $("#study-dialog").close();
   renderAll();
-  showToast(`こむぎが喜んでいます！ +${selectedMinutes + mastery * 5} XP`);
+  showToast(`こむぎが喜んでいます！ +${actualMinutes + mastery * 5} XP`);
 }
 
 function showToast(message) {
@@ -426,11 +581,34 @@ document.addEventListener("click", (event) => {
 
   const mastery = event.target.closest("[data-mastery]");
   if (mastery) completeStudy(Number(mastery.dataset.mastery));
+
+  const chartBar = event.target.closest("[data-chart-label]");
+  if (chartBar) showToast(chartBar.dataset.chartLabel);
 });
 
 $("#pet-shortcut").addEventListener("click", () => switchPage("pet"));
 $("#finish-now").addEventListener("click", showResult);
 $("#copy-ai-prompt").addEventListener("click", copyAiPrompt);
+$("#start-device-timer").addEventListener("click", startDeviceTimer);
+$("#chart-period-tabs").addEventListener("click", (event) => {
+  const period = event.target.closest("[data-chart-period]");
+  if (!period) return;
+  chartPeriod = period.dataset.chartPeriod;
+  chartOffset = 0;
+  renderStudyChart();
+});
+$("#chart-prev").addEventListener("click", () => {
+  chartOffset += 1;
+  renderStudyChart();
+});
+$("#chart-next").addEventListener("click", () => {
+  chartOffset = Math.max(0, chartOffset - 1);
+  renderStudyChart();
+});
+$("#history-more").addEventListener("click", () => {
+  historyVisibleCount += 8;
+  renderJournal();
+});
 $("#shuffle-recommendations").addEventListener("click", () => {
   const shuffled = [...CARDS].sort(() => Math.random() - .5).slice(0, 3).map((card) => card.id);
   state.recommendations = shuffled;
@@ -449,9 +627,14 @@ $("#next-month").addEventListener("click", () => {
 $("#study-dialog").addEventListener("close", () => {
   clearInterval(timerId);
   timerEndsAt = null;
+  timerStartedAt = null;
+  $(".timer-ring").classList.remove("overtime");
 });
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) updateTimerFromClock();
+  if (!document.hidden) {
+    updateTimerFromClock();
+    if (deviceTimerRequested) showToast("iPhoneタイマーと学習を続けます");
+  }
 });
 
 if ("serviceWorker" in navigator) {
