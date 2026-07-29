@@ -20,7 +20,7 @@ const CARDS = [
   { id: "low-triglycerides", category: "lipidLiver", title: "中性脂肪低値" },
   { id: "fatty-liver", category: "lipidLiver", title: "脂肪肝｜原因と生活改善" },
   { id: "osteoporosis", category: "womensHealth", title: "骨粗鬆症｜リスクと予防" },
-  { id: "cervical-cancer", category: "womensHealth", title: "子宮頸がん検診｜結果と精密検査" },
+  { id: "uterine-cancer", category: "womensHealth", title: "子宮がん検診｜頸がん・体がんの違い" },
   { id: "breast-cancer", category: "womensHealth", title: "乳がん検診｜結果と精密検査" },
   { id: "gastric-polyp", category: "upperGi", title: "胃・十二指腸ポリープ" },
   { id: "peptic-ulcer", category: "upperGi", title: "胃・十二指腸潰瘍" },
@@ -50,6 +50,7 @@ let currentCard = null;
 let selectedMinutes = 10;
 let timerId = null;
 let timerSeconds = 0;
+let timerEndsAt = null;
 let activeFilter = "all";
 let calendarCursor = new Date();
 
@@ -309,19 +310,22 @@ function openStudy(cardId) {
 function beginTimer(minutes) {
   selectedMinutes = minutes;
   timerSeconds = minutes * 60;
+  timerEndsAt = Date.now() + timerSeconds * 1000;
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
   $("#timer-card-title").textContent = currentCard.title;
   $("#ai-prompt-text").value = buildAiPrompt();
   updateTimerDisplay();
   clearInterval(timerId);
-  timerId = setInterval(() => {
-    timerSeconds -= 1;
-    updateTimerDisplay();
-    if (timerSeconds <= 0) showResult();
-  }, 1000);
+  timerId = setInterval(updateTimerFromClock, 1000);
 }
 
+function updateTimerFromClock() {
+  if (!timerEndsAt) return;
+  timerSeconds = Math.max(0, Math.ceil((timerEndsAt - Date.now()) / 1000));
+  updateTimerDisplay();
+  if (timerSeconds <= 0) showResult();
+}
 function updateTimerDisplay() {
   const minutes = Math.floor(timerSeconds / 60);
   const seconds = String(timerSeconds % 60).padStart(2, "0");
@@ -375,6 +379,7 @@ async function copyAiPrompt() {
 }
 function showResult() {
   clearInterval(timerId);
+  timerEndsAt = null;
   $("#study-timer").hidden = true;
   $("#study-result").hidden = false;
 }
@@ -441,7 +446,13 @@ $("#next-month").addEventListener("click", () => {
   calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + 1, 1);
   renderCalendar();
 });
-$("#study-dialog").addEventListener("close", () => clearInterval(timerId));
+$("#study-dialog").addEventListener("close", () => {
+  clearInterval(timerId);
+  timerEndsAt = null;
+});
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) updateTimerFromClock();
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
