@@ -511,13 +511,40 @@ async function copyAiPrompt() {
   }
 }
 
+function copyTimerValueToClipboard(value) {
+  const field = document.createElement("textarea");
+  field.value = value;
+  field.setAttribute("readonly", "");
+  field.style.position = "fixed";
+  field.style.opacity = "0";
+  field.style.pointerEvents = "none";
+  field.style.fontSize = "16px";
+  document.body.appendChild(field);
+  field.select();
+  field.setSelectionRange(0, field.value.length);
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  } finally {
+    field.remove();
+  }
+  return copied;
+}
+
 function startDeviceTimer() {
   const shortcutName = "まなび通知";
-  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=text&text=${encodeURIComponent(String(selectedMinutes))}`;
+  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=clipboard`;
+  if (!copyTimerValueToClipboard(String(selectedMinutes))) {
+    showToast("時間を渡せませんでした。Safariで再度お試しください");
+    return;
+  }
   deviceTimerRequested = true;
-  $("#start-device-timer").textContent = `✓ ${selectedMinutes}分で起動しました`;
+  $("#start-device-timer").textContent = `✓ ${selectedMinutes}分を渡しました`;
   $("#start-device-timer").classList.add("requested");
-  showToast("ショートカットへ移動します");
+  showToast(`${selectedMinutes}分をショートカットへ渡します`);
   window.location.href = shortcutUrl;
 }
 
