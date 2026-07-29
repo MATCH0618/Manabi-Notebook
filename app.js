@@ -312,6 +312,7 @@ function beginTimer(minutes) {
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
   $("#timer-card-title").textContent = currentCard.title;
+  $("#ai-prompt-text").value = buildAiPrompt();
   updateTimerDisplay();
   clearInterval(timerId);
   timerId = setInterval(() => {
@@ -327,6 +328,51 @@ function updateTimerDisplay() {
   $("#timer-display").textContent = `${minutes}:${seconds}`;
 }
 
+function buildAiPrompt() {
+  const category = CATEGORIES[currentCard.category];
+  return `あなたは、人間ドック後の健康相談を担当する保健師向けの学習コーチです。
+
+【今回のテーマ】
+${currentCard.title}
+【分野】${category.name}
+【学習時間】${selectedMinutes}分
+
+日本の成人健診・人間ドック後の健康相談を想定し、次の順で実務的に教えてください。
+1. 検査結果・所見の基本的な見方
+2. 主な原因、危険因子、関連する病気
+3. 健康相談で確認する質問
+4. 本人へ伝わりやすい説明例
+5. 生活改善の支援ポイント
+6. 受診・精密検査を勧める際の考え方と見逃せない症状
+7. 相談場面を想定したケース問題1問
+8. 最後に理解確認クイズ3問
+
+指定時間に収まる分量にし、専門用語には短い説明を付けてください。
+判定値や対応がガイドライン・年齢・性別・施設基準で異なる場合は、単一の数値で断定せず違いを明示してください。
+個人の診断や治療指示は行わず、最新の公的ガイドラインと勤務先の手順を確認すべき点も示してください。
+追加質問はせず、今すぐ学習を開始してください。`; 
+}
+
+async function copyAiPrompt() {
+  const field = $("#ai-prompt-text");
+  const prompt = field.value || buildAiPrompt();
+  field.value = prompt;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(prompt);
+    } else {
+      field.focus();
+      field.select();
+      if (!document.execCommand("copy")) throw new Error("copy failed");
+    }
+    showToast("AI学習プロンプトをコピーしました");
+  } catch {
+    field.focus();
+    field.select();
+    showToast("本文を長押ししてコピーしてください");
+  }
+}
 function showResult() {
   clearInterval(timerId);
   $("#study-timer").hidden = true;
@@ -379,6 +425,7 @@ document.addEventListener("click", (event) => {
 
 $("#pet-shortcut").addEventListener("click", () => switchPage("pet"));
 $("#finish-now").addEventListener("click", showResult);
+$("#copy-ai-prompt").addEventListener("click", copyAiPrompt);
 $("#shuffle-recommendations").addEventListener("click", () => {
   const shuffled = [...CARDS].sort(() => Math.random() - .5).slice(0, 3).map((card) => card.id);
   state.recommendations = shuffled;
