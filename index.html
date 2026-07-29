@@ -133,12 +133,34 @@
           <article><span>今月</span><strong id="month-sessions">0回</strong><small>学習セッション</small></article>
           <article><span>合計</span><strong id="journal-minutes">0分</strong><small>学習時間</small></article>
         </div>
+        <article class="study-chart-card paper-card">
+          <div class="section-heading compact chart-heading">
+            <div>
+              <span class="section-kicker">STUDY TIME</span>
+              <h2>学習時間の振り返り</h2>
+            </div>
+            <strong id="chart-total">0分</strong>
+          </div>
+          <div class="chart-period-tabs" id="chart-period-tabs" aria-label="グラフの集計単位">
+            <button type="button" class="active" data-chart-period="day">日別</button>
+            <button type="button" data-chart-period="week">週別</button>
+            <button type="button" data-chart-period="month">月別</button>
+          </div>
+          <div class="chart-navigation">
+            <button type="button" id="chart-prev" aria-label="前の期間">‹</button>
+            <h3 id="chart-range"></h3>
+            <button type="button" id="chart-next" aria-label="次の期間">›</button>
+          </div>
+          <div class="study-chart" id="study-chart" aria-label="学習時間グラフ"></div>
+          <p class="chart-note">棒をタップすると、その期間の学習時間を確認できます。</p>
+        </article>
         <article class="history-card paper-card">
           <div class="section-heading compact">
-            <h2>最近の記録</h2>
+            <h2>学習履歴</h2>
             <span class="auto-label">自動記録</span>
           </div>
           <div id="history-list"></div>
+          <button type="button" class="history-more" id="history-more" hidden>過去の記録をもっと見る</button>
         </article>
       </section>
 
@@ -216,7 +238,7 @@
         <span class="section-kicker">FOCUS TIME</span>
         <h2 id="timer-card-title"></h2>
         <div class="timer-ring">
-          <div><strong id="timer-display">10:00</strong><span>のこり</span></div>
+          <div><strong id="timer-display">10:00</strong><span id="timer-status">のこり</span></div>
         </div>
         <p>こむぎも隣でいっしょに勉強中…</p>
         <section class="ai-study-box" aria-labelledby="ai-study-title">
@@ -228,11 +250,29 @@
           <button type="button" class="copy-prompt-button" id="copy-ai-prompt">📋 学習プロンプトをコピー</button>
           <textarea id="ai-prompt-text" readonly aria-label="生成AIへ貼り付ける学習プロンプト"></textarea>
         </section>
+        <section class="device-alert-box" aria-labelledby="device-alert-title">
+          <div>
+            <span class="section-kicker">IPHONE ALERT</span>
+            <h3 id="device-alert-title">iPhoneから時間をお知らせ</h3>
+            <p><strong id="device-timer-minutes">10分</strong>の標準タイマーを開始します。生成AIを開いていても音と通知で気づけます。</p>
+          </div>
+          <button type="button" class="device-timer-button" id="start-device-timer">⏱ iPhoneタイマーも開始</button>
+          <details class="shortcut-help">
+            <summary>初回だけ必要な設定</summary>
+            <ol>
+              <li>ショートカットで「まなび通知」を作成</li>
+              <li>「入力から数字を取得」を追加</li>
+              <li>「タイマーを開始」を追加し、数字を分として指定</li>
+            </ol>
+            <p>設定後は、このボタンから選択時間が自動で渡されます。</p>
+          </details>
+        </section>
         <button type="button" class="primary-button" id="finish-now">学習を完了する</button>
       </div>
       <div id="study-result" hidden>
         <div class="celebration">✦　🎉　✦</div>
         <h2>おつかれさまでした！</h2>
+        <p class="recorded-time" id="recorded-time"></p>
         <p>今の理解にいちばん近いものは？</p>
         <div class="mastery-options">
           <button type="button" data-mastery="1"><span>🌱</span>触れてみた</button>
