@@ -511,19 +511,25 @@ async function copyAiPrompt() {
   }
 }
 
-function startDeviceTimer() {
+async function startDeviceTimer() {
   const supportedMinutes = new Set([5, 10, 15, 25]);
   if (!supportedMinutes.has(selectedMinutes)) {
     showToast("この時間のiPhoneタイマーには対応していません");
     return;
   }
 
-  const shortcutName = `まなび通知${selectedMinutes}分`;
-  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}`;
+  try {
+    await navigator.clipboard.writeText(String(selectedMinutes));
+  } catch {
+    showToast("時間をコピーできませんでした。Safariで開いて再試行してください");
+    return;
+  }
+
+  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent("まなび通知")}`;
   deviceTimerRequested = true;
   $("#start-device-timer").textContent = `✓ ${selectedMinutes}分通知を起動`;
   $("#start-device-timer").classList.add("requested");
-  showToast(`${shortcutName}を起動します`);
+  showToast(`${selectedMinutes}分を「まなび通知」で開始します`);
   window.location.href = shortcutUrl;
 }
 
