@@ -35,6 +35,49 @@ const CARDS = [
   { id: "alcohol", category: "habits", title: "飲酒習慣｜リスク評価と節酒支援" }
 ];
 
+const ITEM_SLOTS = {
+  head: "あたま",
+  neck: "くびもと",
+  hand: "てもち",
+  wall: "かべ",
+  leftRoom: "左の家具",
+  rightRoom: "右の家具",
+  floor: "ゆか"
+};
+
+const REWARD_ITEMS = [
+  { id: "red-ribbon", name: "あかいリボン", emoji: "🎀", slot: "head", level: 1 },
+  { id: "study-book", name: "まなびの本", emoji: "📖", slot: "hand", level: 1 },
+  { id: "green-bow", name: "みどりの蝶ネクタイ", emoji: "🎗️", slot: "neck", level: 2 },
+  { id: "house-plant", name: "観葉植物", emoji: "🪴", slot: "leftRoom", level: 2 },
+  { id: "soft-cushion", name: "ふかふかソファ", emoji: "🛋️", slot: "floor", level: 3 },
+  { id: "flower-hat", name: "お花のかんむり", emoji: "🌸", slot: "head", level: 3 },
+  { id: "tea-cup", name: "ひとやすみ紅茶", emoji: "🍵", slot: "hand", level: 4 },
+  { id: "star-poster", name: "星空ポスター", emoji: "🌌", slot: "wall", level: 4 },
+  { id: "fluffy-bed", name: "ふかふかベッド", emoji: "🛏️", slot: "rightRoom", level: 5 },
+  { id: "yellow-scarf", name: "きいろいマフラー", emoji: "🧣", slot: "neck", level: 5 },
+  { id: "beret", name: "おしゃれベレー", emoji: "🧢", slot: "head", level: 6 },
+  { id: "desk-lamp", name: "読書ランプ", emoji: "💡", slot: "leftRoom", level: 6 },
+  { id: "magnifier", name: "しらべものルーペ", emoji: "🔎", slot: "hand", level: 7 },
+  { id: "leaf-rug", name: "若葉のラグ", emoji: "🍃", slot: "floor", level: 7 },
+  { id: "pearl-necklace", name: "真珠のネックレス", emoji: "📿", slot: "neck", level: 8 },
+  { id: "bookshelf", name: "知識の本棚", emoji: "📚", slot: "rightRoom", level: 8 },
+  { id: "nurse-cap", name: "保健師キャップ", emoji: "⛑️", slot: "head", level: 9 },
+  { id: "flower-vase", name: "季節の花びん", emoji: "💐", slot: "leftRoom", level: 9 },
+  { id: "clipboard", name: "相談クリップボード", emoji: "📋", slot: "hand", level: 10 },
+  { id: "garden-picture", name: "庭の思い出写真", emoji: "🖼️", slot: "wall", level: 10 },
+  { id: "star-medal", name: "がんばりメダル", emoji: "🏅", slot: "neck", level: 11 },
+  { id: "fishbowl", name: "きらきら金魚鉢", emoji: "🐠", slot: "rightRoom", level: 11 },
+  { id: "party-hat", name: "お祝いハット", emoji: "🥳", slot: "head", level: 12 },
+  { id: "cloud-rug", name: "雲のラグ", emoji: "☁️", slot: "floor", level: 12 },
+  { id: "pencil", name: "お気に入り鉛筆", emoji: "✏️", slot: "hand", level: 13 },
+  { id: "wall-clock", name: "森の掛け時計", emoji: "🕰️", slot: "wall", level: 13 },
+  { id: "royal-cape", name: "実りの羽飾り", emoji: "🪶", slot: "neck", level: 14 },
+  { id: "study-desk", name: "相棒の勉強机", emoji: "🪑", slot: "leftRoom", level: 14 },
+  { id: "gold-crown", name: "学びの王冠", emoji: "👑", slot: "head", level: 15 },
+  { id: "treasure-chest", name: "思い出の宝箱", emoji: "🧰", slot: "rightRoom", level: 15 }
+];
+
 const MASTERY_LABELS = ["未着手", "触れてみた", "だいたい分かった", "説明できそう", "仕事で活かせそう"];
 const STORAGE_KEY = "manabi-partner-v1";
 
@@ -42,7 +85,22 @@ const defaultState = {
   cards: {},
   sessions: [],
   xp: 0,
-  recommendations: ["hypertension", "high-ldl", "smoking"]
+  recommendations: ["hypertension", "high-ldl", "smoking"],
+  companionName: "こむぎ",
+  equipped: {
+    head: "red-ribbon",
+    neck: null,
+    hand: "study-book",
+    wall: null,
+    leftRoom: null,
+    rightRoom: null,
+    floor: null
+  },
+  settings: {
+    theme: "peach",
+    reduceMotion: false,
+    shortcutName: "まなび通知"
+  }
 };
 
 let state = loadState();
@@ -59,29 +117,62 @@ let chartPeriod = "day";
 let chartOffset = 0;
 let historyVisibleCount = 8;
 let deviceTimerRequested = false;
+let petPanel = "dressup";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
+function normalizeState(saved) {
+  const validIds = new Set(CARDS.map((card) => card.id));
+  const validItemIds = new Set(REWARD_ITEMS.map((item) => item.id));
+  const cards = Object.fromEntries(
+    Object.entries(saved?.cards || {}).filter(([id]) => validIds.has(id))
+  );
+  const sessions = (saved?.sessions || []).filter((session) => session && validIds.has(session.cardId));
+  const recommendations = (saved?.recommendations || []).filter((id) => validIds.has(id));
+  const equipped = Object.fromEntries(
+    Object.keys(ITEM_SLOTS).map((slot) => {
+      const hasSavedSlot = saved?.equipped && Object.prototype.hasOwnProperty.call(saved.equipped, slot);
+      const itemId = hasSavedSlot ? saved.equipped[slot] : defaultState.equipped[slot];
+      const item = REWARD_ITEMS.find((candidate) => candidate.id === itemId);
+      return [slot, item && item.slot === slot && validItemIds.has(itemId) ? itemId : null];
+    })
+  );
+  const companionName = typeof saved?.companionName === "string" && saved.companionName.trim()
+    ? saved.companionName.trim().slice(0, 12)
+    : defaultState.companionName;
+  const theme = ["peach", "mint", "lavender"].includes(saved?.settings?.theme)
+    ? saved.settings.theme
+    : defaultState.settings.theme;
+  const shortcutName = typeof saved?.settings?.shortcutName === "string" && saved.settings.shortcutName.trim()
+    ? saved.settings.shortcutName.trim().slice(0, 30)
+    : defaultState.settings.shortcutName;
+
+  return {
+    ...structuredClone(defaultState),
+    ...saved,
+    cards,
+    sessions,
+    xp: Math.max(0, Number(saved?.xp) || 0),
+    recommendations: recommendations.length === 3
+      ? recommendations
+      : [...defaultState.recommendations],
+    companionName,
+    equipped,
+    settings: {
+      ...defaultState.settings,
+      ...(saved?.settings || {}),
+      theme,
+      reduceMotion: Boolean(saved?.settings?.reduceMotion),
+      shortcutName
+    }
+  };
+}
+
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    const validIds = new Set(CARDS.map((card) => card.id));
-    const cards = Object.fromEntries(
-      Object.entries(saved?.cards || {}).filter(([id]) => validIds.has(id))
-    );
-    const sessions = (saved?.sessions || []).filter((session) => validIds.has(session.cardId));
-    const recommendations = (saved?.recommendations || []).filter((id) => validIds.has(id));
-
-    return {
-      ...defaultState,
-      ...saved,
-      cards,
-      sessions,
-      recommendations: recommendations.length === 3
-        ? recommendations
-        : [...defaultState.recommendations]
-    };
+    return normalizeState(saved);
   } catch {
     return structuredClone(defaultState);
   }
@@ -148,7 +239,17 @@ function formatDuration(seconds, includeSeconds = false) {
   return `${Math.round(safeSeconds / 60)}分`;
 }
 
+function applySettings() {
+  document.body.dataset.theme = state.settings.theme;
+  document.body.classList.toggle("reduce-motion", state.settings.reduceMotion);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute(
+    "content",
+    state.settings.theme === "mint" ? "#f3fbf6" : state.settings.theme === "lavender" ? "#f8f5ff" : "#fff8f2"
+  );
+}
+
 function renderAll() {
+  applySettings();
   renderHeader();
   renderHome();
   renderFilters();
@@ -156,6 +257,7 @@ function renderAll() {
   renderSkills();
   renderJournal();
   renderPet();
+  renderSettings();
 }
 
 function renderHeader() {
@@ -167,6 +269,9 @@ function renderHeader() {
 function renderHome() {
   const hour = new Date().getHours();
   $("#hero-greeting").textContent = hour < 11 ? "おはようございます" : hour < 18 ? "おつかれさまです" : "おかえりなさい";
+  $("#home-pet-name").textContent = state.companionName;
+  $("#home-pet-stage").setAttribute("aria-label", `相棒の${state.companionName}`);
+  $("#pet-message").textContent = `${state.companionName}と、今日もできる分だけ進めよう。`;
   $("#streak-count").textContent = getStreak();
   $("#total-minutes").textContent = roundedMinutes(totalSessionSeconds());
   $("#week-count").textContent = sessionsThisWeek().length;
@@ -413,12 +518,185 @@ function renderPet() {
   const level = getLevel();
   const currentXp = state.xp % 100;
   $("#room-level").textContent = level;
+  $("#room-pet-name").textContent = state.companionName;
   $("#xp-label").textContent = `${currentXp} / 100 XP`;
   $("#xp-progress").style.width = `${currentXp}%`;
   const messages = state.sessions.length
     ? ["今日の積み重ね、ちゃんと残ってるよ。", "いっしょに育ってきたね！", "次はどのカードにする？"]
     : ["最初の一歩、いっしょに始めよう。"];
   $("#room-message").textContent = messages[state.sessions.length % messages.length];
+  renderEquipment();
+  renderPetPanels();
+}
+
+function unlockedRewardItems() {
+  const level = getLevel();
+  return REWARD_ITEMS.filter((item) => item.level <= level);
+}
+
+function renderEquipment() {
+  $$("[data-equipped-slot]").forEach((layer) => {
+    const slot = layer.dataset.equippedSlot;
+    const item = REWARD_ITEMS.find((candidate) => candidate.id === state.equipped[slot]);
+    layer.textContent = item && item.level <= getLevel() ? item.emoji : "";
+    layer.setAttribute("aria-label", item?.name || "");
+  });
+
+  $$(".cat").forEach((cat) => {
+    cat.classList.toggle("has-neck-item", Boolean(state.equipped.neck));
+  });
+  $("#room-rug").classList.toggle("hidden-rug", Boolean(state.equipped.floor));
+}
+
+function itemCard(item, mode) {
+  const unlocked = item.level <= getLevel();
+  const equipped = state.equipped[item.slot] === item.id;
+  const action = mode === "dressup" && unlocked ? `data-equip-item="${item.id}"` : "";
+  return `
+    <button type="button" class="reward-item ${unlocked ? "unlocked" : "locked"} ${equipped ? "equipped" : ""}" ${action} ${unlocked ? "" : "disabled"}>
+      <span class="reward-emoji">${unlocked ? item.emoji : "?"}</span>
+      <strong>${unlocked ? item.name : "？？？"}</strong>
+      <small>${equipped ? "装着中" : unlocked ? ITEM_SLOTS[item.slot] : `Lv.${item.level}で解放`}</small>
+    </button>`;
+}
+
+function renderPetPanels() {
+  const unlocked = unlockedRewardItems();
+  const percent = Math.round((unlocked.length / REWARD_ITEMS.length) * 100);
+  const nextItem = REWARD_ITEMS.find((item) => item.level > getLevel());
+
+  $("#collection-count").textContent = `${unlocked.length} / ${REWARD_ITEMS.length}`;
+  $("#collection-progress").style.width = `${percent}%`;
+  $("#collection-next").textContent = nextItem
+    ? `次はLv.${nextItem.level}で「${nextItem.name}」をゲット`
+    : "すべてのアイテムを集めました！";
+  $("#dressup-panel").hidden = petPanel !== "dressup";
+  $("#collection-panel").hidden = petPanel !== "collection";
+  $$("[data-pet-panel]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.petPanel === petPanel);
+  });
+
+  $("#dressup-grid").innerHTML = unlocked.map((item) => itemCard(item, "dressup")).join("");
+  $("#collection-grid").innerHTML = REWARD_ITEMS.map((item) => itemCard(item, "collection")).join("");
+
+  const equippedItems = Object.entries(state.equipped)
+    .map(([slot, id]) => {
+      const item = REWARD_ITEMS.find((candidate) => candidate.id === id);
+      return item ? { slot, item } : null;
+    })
+    .filter(Boolean);
+  $("#equipped-strip").innerHTML = equippedItems.length
+    ? equippedItems.map(({ slot, item }) => `
+        <button type="button" data-clear-slot="${slot}" aria-label="${item.name}を外す">
+          <span>${item.emoji}</span><small>${ITEM_SLOTS[slot]}</small><i>×</i>
+        </button>`).join("")
+    : `<p>まだ何も身につけていません。</p>`;
+}
+
+function renderSettings() {
+  $("#companion-name-input").value = state.companionName;
+  $("#shortcut-name-input").value = state.settings.shortcutName;
+  $("#reduce-motion-toggle").checked = state.settings.reduceMotion;
+  $$("[data-theme-choice]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.themeChoice === state.settings.theme);
+  });
+  $("#data-summary").textContent = `学習${state.sessions.length}回・${formatDuration(totalSessionSeconds())}・Lv.${getLevel()}・コレクション${unlockedRewardItems().length}個`;
+}
+
+function saveCompanionName() {
+  const name = $("#companion-name-input").value.trim().slice(0, 12);
+  if (!name) {
+    showToast("相棒の名前を入力してください");
+    return;
+  }
+  state.companionName = name;
+  saveState();
+  renderAll();
+  showToast(`相棒の名前を「${name}」に変更しました`);
+}
+
+function saveShortcutName() {
+  const name = $("#shortcut-name-input").value.trim().slice(0, 30);
+  if (!name) {
+    showToast("ショートカット名を入力してください");
+    return;
+  }
+  state.settings.shortcutName = name;
+  saveState();
+  showToast(`通知ショートカットを「${name}」に設定しました`);
+}
+
+function equipRewardItem(itemId) {
+  const item = REWARD_ITEMS.find((candidate) => candidate.id === itemId);
+  if (!item || item.level > getLevel()) return;
+  state.equipped[item.slot] = state.equipped[item.slot] === item.id ? null : item.id;
+  saveState();
+  renderPet();
+  showToast(state.equipped[item.slot] ? `${item.name}を使いました` : `${item.name}を外しました`);
+}
+
+function clearEquipment(slot = null) {
+  if (slot) {
+    state.equipped[slot] = null;
+  } else {
+    Object.keys(state.equipped).forEach((key) => {
+      state.equipped[key] = null;
+    });
+  }
+  saveState();
+  renderPet();
+  showToast(slot ? "アイテムを外しました" : "きせかえをすべて外しました");
+}
+
+function exportData() {
+  const payload = {
+    app: "まなびの相棒手帳",
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    state
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `manabi-notebook-backup-${localDateKey()}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast("バックアップを書き出しました");
+}
+
+async function importData(file) {
+  if (!file) return;
+  try {
+    const parsed = JSON.parse(await file.text());
+    const importedState = parsed?.state || parsed;
+    if (!importedState || !Array.isArray(importedState.sessions) || typeof importedState.cards !== "object") {
+      throw new Error("invalid backup");
+    }
+    state = normalizeState(importedState);
+    saveState();
+    renderAll();
+    showToast("バックアップを読み込みました");
+  } catch {
+    showToast("このファイルは読み込めませんでした");
+  } finally {
+    $("#import-data").value = "";
+  }
+}
+
+function resetAllData() {
+  const first = window.confirm("学習記録・XP・コレクション・設定をすべて削除します。元に戻せません。続けますか？");
+  if (!first) return;
+  const second = window.confirm("本当にすべてリセットしますか？必要なら先にバックアップを書き出してください。");
+  if (!second) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = structuredClone(defaultState);
+  petPanel = "dressup";
+  renderAll();
+  switchPage("home");
+  showToast("すべてのデータをリセットしました");
 }
 
 function startOfWeekDates() {
@@ -439,7 +717,7 @@ function sessionsThisWeek() {
 function switchPage(target) {
   $$(".page").forEach((page) => page.classList.toggle("active", page.dataset.page === target));
   $$(".bottom-nav button").forEach((button) => button.classList.toggle("active", button.dataset.target === target));
-  const titles = { home: "きょうの手帳", cards: "知識カード", skills: "スキルガーデン", journal: "まなび手帳", pet: "相棒の部屋" };
+  const titles = { home: "きょうの手帳", cards: "知識カード", skills: "スキルガーデン", journal: "まなび手帳", pet: "相棒の部屋", settings: "設定" };
   $("#page-title").textContent = titles[target];
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -466,6 +744,7 @@ function beginTimer(minutes) {
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
   $("#timer-card-title").textContent = currentCard.title;
+  $("#timer-pet-name").textContent = state.companionName;
   $("#device-timer-minutes").textContent = `${selectedMinutes}分`;
   $("#start-device-timer").textContent = "⏱ iPhoneタイマーも開始";
   $("#start-device-timer").classList.remove("requested");
@@ -551,11 +830,11 @@ async function startDeviceTimer() {
     return;
   }
 
-  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent("まなび通知")}`;
+  const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(state.settings.shortcutName)}`;
   deviceTimerRequested = true;
   $("#start-device-timer").textContent = `✓ ${selectedMinutes}分通知を起動`;
   $("#start-device-timer").classList.add("requested");
-  showToast(`${selectedMinutes}分を「まなび通知」で開始します`);
+  showToast(`${selectedMinutes}分を「${state.settings.shortcutName}」で開始します`);
   window.location.href = shortcutUrl;
 }
 
@@ -590,7 +869,7 @@ function completeStudy(mastery) {
   saveState();
   $("#study-dialog").close();
   renderAll();
-  showToast(`こむぎが喜んでいます！ +${actualMinutes + mastery * 5} XP`);
+  showToast(`${state.companionName}が喜んでいます！ +${actualMinutes + mastery * 5} XP`);
 }
 
 function showToast(message) {
@@ -622,9 +901,44 @@ document.addEventListener("click", (event) => {
 
   const chartBar = event.target.closest("[data-chart-label]");
   if (chartBar) showToast(chartBar.dataset.chartLabel);
+
+  const petPanelButton = event.target.closest("[data-pet-panel]");
+  if (petPanelButton) {
+    petPanel = petPanelButton.dataset.petPanel;
+    renderPetPanels();
+  }
+
+  const rewardItem = event.target.closest("[data-equip-item]");
+  if (rewardItem) equipRewardItem(rewardItem.dataset.equipItem);
+
+  const clearSlot = event.target.closest("[data-clear-slot]");
+  if (clearSlot) clearEquipment(clearSlot.dataset.clearSlot);
+
+  const themeChoice = event.target.closest("[data-theme-choice]");
+  if (themeChoice) {
+    state.settings.theme = themeChoice.dataset.themeChoice;
+    saveState();
+    applySettings();
+    renderSettings();
+    showToast("手帳のテーマを変更しました");
+  }
 });
 
 $("#pet-shortcut").addEventListener("click", () => switchPage("pet"));
+$("#settings-shortcut").addEventListener("click", () => switchPage("settings"));
+$("#settings-back").addEventListener("click", () => switchPage("pet"));
+$("#save-companion-name").addEventListener("click", saveCompanionName);
+$("#save-shortcut-name").addEventListener("click", saveShortcutName);
+$("#reduce-motion-toggle").addEventListener("change", (event) => {
+  state.settings.reduceMotion = event.target.checked;
+  saveState();
+  applySettings();
+  showToast(event.target.checked ? "画面の動きを少なくしました" : "通常の動きに戻しました");
+});
+$("#clear-equipment").addEventListener("click", () => clearEquipment());
+$("#export-data").addEventListener("click", exportData);
+$("#import-data").addEventListener("change", (event) => importData(event.target.files?.[0]));
+$("#reset-data").addEventListener("click", resetAllData);
 $("#finish-now").addEventListener("click", showResult);
 $("#copy-ai-prompt").addEventListener("click", copyAiPrompt);
 $("#start-device-timer").addEventListener("click", startDeviceTimer);
