@@ -24,10 +24,13 @@
         <p class="eyebrow" id="today-label"></p>
         <h1 id="page-title">きょうの手帳</h1>
       </div>
-      <button class="level-pill" id="pet-shortcut" aria-label="相棒の部屋を開く">
-        <span class="mini-face" aria-hidden="true">•ᴗ•</span>
-        <span>Lv.<strong id="header-level">1</strong></span>
-      </button>
+      <div class="topbar-actions">
+        <button class="icon-button" id="settings-shortcut" aria-label="設定を開く">⚙</button>
+        <button class="level-pill" id="pet-shortcut" aria-label="相棒の部屋を開く">
+          <span class="mini-face" aria-hidden="true">•ᴗ•</span>
+          <span>Lv.<strong id="header-level">1</strong></span>
+        </button>
+      </div>
     </header>
 
     <main id="app" aria-live="polite">
@@ -42,7 +45,7 @@
               <span>✦ <strong id="total-minutes">0</strong>分まなんだ</span>
             </div>
           </div>
-          <div class="pet-stage" aria-label="相棒のこむぎ">
+          <div class="pet-stage" id="home-pet-stage" aria-label="相棒">
             <div class="sparkle s1">✦</div>
             <div class="sparkle s2">·</div>
             <div class="cat">
@@ -56,8 +59,11 @@
               <span class="cat-body"></span>
               <span class="cat-tail"></span>
               <span class="cat-scarf"></span>
+              <span class="wearable-layer head-layer" data-equipped-slot="head"></span>
+              <span class="wearable-layer neck-layer" data-equipped-slot="neck"></span>
+              <span class="wearable-layer hand-layer" data-equipped-slot="hand"></span>
             </div>
-            <div class="pet-name">こむぎ</div>
+            <div class="pet-name" id="home-pet-name">こむぎ</div>
           </div>
         </article>
 
@@ -184,6 +190,10 @@
         <div class="room-scene paper-card">
           <div class="window"><span></span></div>
           <div class="shelf"><i></i><i></i><i></i></div>
+          <span class="furniture-layer wall-layer" data-equipped-slot="wall"></span>
+          <span class="furniture-layer left-room-layer" data-equipped-slot="leftRoom"></span>
+          <span class="furniture-layer right-room-layer" data-equipped-slot="rightRoom"></span>
+          <span class="furniture-layer floor-layer" data-equipped-slot="floor"></span>
           <div class="room-cat">
             <div class="cat large">
               <span class="cat-ear left"></span>
@@ -196,16 +206,19 @@
               <span class="cat-body"></span>
               <span class="cat-tail"></span>
               <span class="cat-scarf"></span>
+              <span class="wearable-layer head-layer" data-equipped-slot="head"></span>
+              <span class="wearable-layer neck-layer" data-equipped-slot="neck"></span>
+              <span class="wearable-layer hand-layer" data-equipped-slot="hand"></span>
             </div>
             <div class="speech-bubble" id="room-message">また会えてうれしいな！</div>
           </div>
-          <div class="rug"></div>
+          <div class="rug" id="room-rug"></div>
         </div>
         <article class="pet-profile paper-card">
           <div class="pet-profile-heading">
             <div>
               <span class="section-kicker">MY PARTNER</span>
-              <h2>こむぎ</h2>
+              <h2 id="room-pet-name">こむぎ</h2>
             </div>
             <span class="pet-level">Lv.<strong id="room-level">1</strong></span>
           </div>
@@ -215,14 +228,95 @@
           </div>
           <p class="gentle-note">お休みしても元気は減りません。再開した日は、いつでも喜んで迎えます。</p>
         </article>
-        <div class="unlock-list">
-          <h2>これから増えるもの</h2>
-          <div class="unlock-grid">
-            <article><span>🎀</span><strong>リボン</strong><small>Lv.2</small></article>
-            <article><span>🪴</span><strong>観葉植物</strong><small>Lv.3</small></article>
-            <article><span>🛏️</span><strong>ふかふかベッド</strong><small>Lv.4</small></article>
+
+        <article class="wardrobe-card paper-card">
+          <div class="collection-summary">
+            <div>
+              <span class="section-kicker">REWARD COLLECTION</span>
+              <h2>相棒コレクション</h2>
+            </div>
+            <strong id="collection-count">0 / 0</strong>
           </div>
+          <div class="collection-progress"><span id="collection-progress"></span></div>
+          <p class="collection-next" id="collection-next"></p>
+          <div class="pet-panel-tabs" id="pet-panel-tabs" aria-label="相棒メニュー">
+            <button type="button" class="active" data-pet-panel="dressup">きせかえ</button>
+            <button type="button" data-pet-panel="collection">コレクション</button>
+          </div>
+
+          <div class="pet-panel" id="dressup-panel">
+            <p class="panel-guide">手に入れたアイテムをタップすると、その場で身につけたり部屋に飾ったりできます。</p>
+            <div class="equipped-strip" id="equipped-strip"></div>
+            <div class="item-grid" id="dressup-grid"></div>
+            <button type="button" class="secondary-button" id="clear-equipment">すべて外す</button>
+          </div>
+
+          <div class="pet-panel" id="collection-panel" hidden>
+            <p class="panel-guide">学習してレベルが上がると、装飾品や家具を自動でゲットできます。</p>
+            <div class="item-grid collection-grid" id="collection-grid"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" data-page="settings">
+        <button type="button" class="back-button" id="settings-back">‹ 相棒の部屋へ戻る</button>
+        <div class="intro-card">
+          <span class="section-kicker">SETTINGS</span>
+          <h2>設定</h2>
+          <p>相棒と手帳を、自分の使いやすい形に整えます。</p>
         </div>
+
+        <article class="settings-card paper-card">
+          <div class="setting-heading">
+            <span>🐾</span>
+            <div><h2>相棒の名前</h2><p>12文字まで設定できます。</p></div>
+          </div>
+          <div class="input-action">
+            <input id="companion-name-input" type="text" maxlength="12" autocomplete="off" aria-label="相棒の名前">
+            <button type="button" id="save-companion-name">変更</button>
+          </div>
+        </article>
+
+        <article class="settings-card paper-card">
+          <div class="setting-heading">
+            <span>🎨</span>
+            <div><h2>手帳のテーマ</h2><p>好きな色合いを選べます。</p></div>
+          </div>
+          <div class="theme-grid" id="theme-grid">
+            <button type="button" data-theme-choice="peach"><i class="theme-swatch peach"></i>ももいろ</button>
+            <button type="button" data-theme-choice="mint"><i class="theme-swatch mint"></i>みどり</button>
+            <button type="button" data-theme-choice="lavender"><i class="theme-swatch lavender"></i>むらさき</button>
+          </div>
+          <label class="toggle-row">
+            <span><strong>動きを少なくする</strong><small>画面切替や成長演出を控えめにします。</small></span>
+            <input id="reduce-motion-toggle" type="checkbox">
+          </label>
+        </article>
+
+        <article class="settings-card paper-card">
+          <div class="setting-heading">
+            <span>⏱</span>
+            <div><h2>iPhone通知</h2><p>タイマー連携で呼び出すショートカット名です。</p></div>
+          </div>
+          <div class="input-action">
+            <input id="shortcut-name-input" type="text" maxlength="30" autocomplete="off" aria-label="ショートカット名">
+            <button type="button" id="save-shortcut-name">保存</button>
+          </div>
+        </article>
+
+        <article class="settings-card paper-card">
+          <div class="setting-heading">
+            <span>💾</span>
+            <div><h2>データ管理</h2><p id="data-summary"></p></div>
+          </div>
+          <div class="data-actions">
+            <button type="button" id="export-data">バックアップを書き出す</button>
+            <label for="import-data">バックアップを読み込む</label>
+            <input id="import-data" type="file" accept="application/json,.json" hidden>
+          </div>
+          <p class="backup-note">機種変更やSafariのデータ消去に備えて、学習記録・XP・きせかえをまとめて保存できます。</p>
+          <button type="button" class="danger-button" id="reset-data">すべてのデータをリセット</button>
+        </article>
       </section>
     </main>
 
@@ -256,7 +350,7 @@
         <div class="timer-ring">
           <div><strong id="timer-display">10:00</strong><span id="timer-status">のこり</span></div>
         </div>
-        <p>こむぎも隣でいっしょに勉強中…</p>
+        <p><span id="timer-pet-name">こむぎ</span>も隣でいっしょに勉強中…</p>
         <section class="ai-study-box" aria-labelledby="ai-study-title">
           <div>
             <span class="section-kicker">AI STUDY</span>
@@ -275,14 +369,14 @@
           <button type="button" class="device-timer-button" id="start-device-timer">⏱ iPhoneタイマーも開始</button>
           <details class="shortcut-help">
             <summary>初回だけ必要な設定</summary>
-            <p>ショートカットは「まなび通知」1つだけ作成し、次の4アクションを上から並べてください。</p>
+            <p>設定画面で指定した名前のショートカットを1つだけ作成し、次の4アクションを上から並べてください。</p>
             <ol>
               <li>「クリップボードを取得」</li>
               <li>「クリップボードから数字を取得」</li>
               <li>「リストから項目を取得」→ 最初の項目</li>
               <li>「最初の項目 分 のタイマーを開始」</li>
             </ol>
-            <p>以前の「ショートカットの入力」を使う構成は削除してください。アプリが選択時間をコピーしてから「まなび通知」を起動するため、ショートカットは1つで動作します。</p>
+            <p>以前の「ショートカットの入力」を使う構成は削除してください。アプリが選択時間をコピーしてから設定したショートカットを起動するため、ショートカットは1つで動作します。</p>
           </details>
         </section>
         <button type="button" class="primary-button" id="finish-now">学習を完了する</button>
