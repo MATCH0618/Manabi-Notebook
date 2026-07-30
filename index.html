@@ -96,16 +96,32 @@
           <h2>わたしのスキルガーデン</h2>
           <p>カードを学ぶほど、分野ごとの花が育ちます。</p>
         </div>
-        <div class="garden-summary paper-card">
-          <div class="garden-illustration" aria-hidden="true">
-            <span class="flower f1">✿</span><span class="flower f2">✿</span><span class="flower f3">✿</span>
+        <article class="garden-hero paper-card" id="garden-hero">
+          <div class="garden-sky" aria-hidden="true">
+            <span class="garden-sun"></span>
+            <span class="garden-cloud cloud-one"></span>
+            <span class="garden-cloud cloud-two"></span>
           </div>
-          <div>
-            <p>全体の成長</p>
+          <div class="garden-copy">
+            <span class="section-kicker">GROWING WITH YOU</span>
+            <p>庭全体の成長</p>
             <strong id="overall-percent">0%</strong>
+            <span class="garden-stage-label" id="garden-stage-label">芽吹きの庭</span>
           </div>
-          <div class="summary-progress"><span id="overall-progress"></span></div>
-        </div>
+          <div class="garden-tree" aria-hidden="true">
+            <span class="tree-crown crown-back"></span>
+            <span class="tree-crown crown-left"></span>
+            <span class="tree-crown crown-right"></span>
+            <span class="tree-crown crown-front"></span>
+            <span class="tree-trunk"></span>
+            <span class="tree-branch branch-left"></span>
+            <span class="tree-branch branch-right"></span>
+          </div>
+          <div class="garden-hill hill-back" aria-hidden="true"></div>
+          <div class="garden-hill hill-front" aria-hidden="true"></div>
+          <div class="flower-field" id="flower-field" aria-label="7分野の花畑"></div>
+          <div class="summary-progress" aria-label="庭全体の成長率"><span id="overall-progress"></span></div>
+        </article>
         <div class="skill-list" id="skill-list"></div>
       </section>
 
