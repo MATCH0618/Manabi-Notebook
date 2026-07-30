@@ -227,8 +227,34 @@ function renderSkills() {
   });
   const total = scores.reduce((sum, score) => sum + score.points, 0);
   const overall = Math.round((total / (CARDS.length * 4)) * 100);
+  const growthStage = overall === 0 ? 0 : Math.min(4, Math.ceil(overall / 25));
+  const stageLabels = ["これから芽吹く庭", "芽吹きの庭", "若葉の庭", "花ひらく庭", "実りの大樹"];
+  const treeScale = [.82, .88, .94, 1, 1.06][growthStage];
+
   $("#overall-percent").textContent = `${overall}%`;
   $("#overall-progress").style.width = `${overall}%`;
+  $("#garden-stage-label").textContent = stageLabels[growthStage];
+
+  const gardenHero = $("#garden-hero");
+  gardenHero.className = `garden-hero paper-card growth-${growthStage}`;
+  gardenHero.querySelector(".garden-tree").style.setProperty("--tree-scale", treeScale);
+
+  const positions = [
+    ["8%", "4px"], ["21%", "17px"], ["34%", "2px"], ["49%", "20px"],
+    ["64%", "7px"], ["79%", "18px"], ["92%", "3px"]
+  ];
+  const flowerColors = ["#ef8d86", "#f0c85e", "#eea57e", "#7ebf91", "#75a9d1", "#ab8bc6", "#f19fbd"];
+  $("#flower-field").innerHTML = scores.map((score, index) => {
+    const bloom = score.percent / 100;
+    const scale = (.54 + bloom * .66).toFixed(2);
+    const opacity = (.3 + bloom * .7).toFixed(2);
+    return `
+      <span class="flower-cluster" title="${CATEGORIES[score.categoryId].name} ${score.percent}%"
+        style="--flower-x:${positions[index][0]};--flower-y:${positions[index][1]};--flower-color:${flowerColors[index]};--flower-scale:${scale};--flower-opacity:${opacity}">
+        <i class="flower-stem"></i><i class="flower-bloom"></i>
+      </span>`;
+  }).join("");
+
   $("#skill-list").innerHTML = scores.map((score) => {
     const category = CATEGORIES[score.categoryId];
     const level = score.percent === 100 ? 5 : Math.floor(score.percent / 25) + 1;
