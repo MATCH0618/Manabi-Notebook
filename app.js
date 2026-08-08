@@ -46,39 +46,40 @@ const ITEM_SLOTS = {
 };
 
 const REWARD_ITEMS = [
-  { id: "red-ribbon", name: "あかいリボン", emoji: "🎀", slot: "head", level: 1 },
-  { id: "study-book", name: "まなびの本", emoji: "📖", slot: "hand", level: 1 },
-  { id: "green-bow", name: "みどりの蝶ネクタイ", emoji: "🎗️", slot: "neck", level: 2 },
-  { id: "house-plant", name: "観葉植物", emoji: "🪴", slot: "leftRoom", level: 2 },
-  { id: "soft-cushion", name: "ふかふかソファ", emoji: "🛋️", slot: "floor", level: 3 },
-  { id: "flower-hat", name: "お花のかんむり", emoji: "🌸", slot: "head", level: 3 },
-  { id: "tea-cup", name: "ひとやすみ紅茶", emoji: "🍵", slot: "hand", level: 4 },
-  { id: "star-poster", name: "星空ポスター", emoji: "🌌", slot: "wall", level: 4 },
-  { id: "fluffy-bed", name: "ふかふかベッド", emoji: "🛏️", slot: "rightRoom", level: 5 },
-  { id: "yellow-scarf", name: "きいろいマフラー", emoji: "🧣", slot: "neck", level: 5 },
-  { id: "beret", name: "おしゃれベレー", emoji: "🧢", slot: "head", level: 6 },
-  { id: "desk-lamp", name: "読書ランプ", emoji: "💡", slot: "leftRoom", level: 6 },
-  { id: "magnifier", name: "しらべものルーペ", emoji: "🔎", slot: "hand", level: 7 },
-  { id: "leaf-rug", name: "若葉のラグ", emoji: "🍃", slot: "floor", level: 7 },
-  { id: "pearl-necklace", name: "真珠のネックレス", emoji: "📿", slot: "neck", level: 8 },
-  { id: "bookshelf", name: "知識の本棚", emoji: "📚", slot: "rightRoom", level: 8 },
-  { id: "nurse-cap", name: "保健師キャップ", emoji: "⛑️", slot: "head", level: 9 },
-  { id: "flower-vase", name: "季節の花びん", emoji: "💐", slot: "leftRoom", level: 9 },
-  { id: "clipboard", name: "相談クリップボード", emoji: "📋", slot: "hand", level: 10 },
-  { id: "garden-picture", name: "庭の思い出写真", emoji: "🖼️", slot: "wall", level: 10 },
-  { id: "star-medal", name: "がんばりメダル", emoji: "🏅", slot: "neck", level: 11 },
-  { id: "fishbowl", name: "きらきら金魚鉢", emoji: "🐠", slot: "rightRoom", level: 11 },
-  { id: "party-hat", name: "お祝いハット", emoji: "🥳", slot: "head", level: 12 },
-  { id: "cloud-rug", name: "雲のラグ", emoji: "☁️", slot: "floor", level: 12 },
-  { id: "pencil", name: "お気に入り鉛筆", emoji: "✏️", slot: "hand", level: 13 },
-  { id: "wall-clock", name: "森の掛け時計", emoji: "🕰️", slot: "wall", level: 13 },
-  { id: "royal-cape", name: "実りの羽飾り", emoji: "🪶", slot: "neck", level: 14 },
-  { id: "study-desk", name: "相棒の勉強机", emoji: "🪑", slot: "leftRoom", level: 14 },
-  { id: "gold-crown", name: "学びの王冠", emoji: "👑", slot: "head", level: 15 },
-  { id: "treasure-chest", name: "思い出の宝箱", emoji: "🧰", slot: "rightRoom", level: 15 }
+  { id: "red-ribbon", name: "あかいリボン", slot: "head", level: 1 },
+  { id: "study-book", name: "まなびの本", slot: "hand", level: 1 },
+  { id: "green-bow", name: "みどりの蝶ネクタイ", slot: "neck", level: 2 },
+  { id: "house-plant", name: "観葉植物", slot: "leftRoom", level: 2 },
+  { id: "soft-cushion", name: "ふかふかソファ", slot: "floor", level: 3 },
+  { id: "flower-hat", name: "お花のかんむり", slot: "head", level: 3 },
+  { id: "tea-cup", name: "ひとやすみ紅茶", slot: "hand", level: 4 },
+  { id: "star-poster", name: "星空ポスター", slot: "wall", level: 4 },
+  { id: "fluffy-bed", name: "ふかふかベッド", slot: "rightRoom", level: 5 },
+  { id: "yellow-scarf", name: "きいろいマフラー", slot: "neck", level: 5 },
+  { id: "beret", name: "おしゃれベレー", slot: "head", level: 6 },
+  { id: "desk-lamp", name: "読書ランプ", slot: "leftRoom", level: 6 },
+  { id: "magnifier", name: "しらべものルーペ", slot: "hand", level: 7 },
+  { id: "leaf-rug", name: "若葉のラグ", slot: "floor", level: 7 },
+  { id: "pearl-necklace", name: "真珠のネックレス", slot: "neck", level: 8 },
+  { id: "bookshelf", name: "知識の本棚", slot: "rightRoom", level: 8 },
+  { id: "nurse-cap", name: "保健師キャップ", slot: "head", level: 9 },
+  { id: "flower-vase", name: "季節の花びん", slot: "leftRoom", level: 9 },
+  { id: "clipboard", name: "相談クリップボード", slot: "hand", level: 10 },
+  { id: "garden-picture", name: "庭の思い出写真", slot: "wall", level: 10 },
+  { id: "star-medal", name: "がんばりメダル", slot: "neck", level: 11 },
+  { id: "fishbowl", name: "きらきら金魚鉢", slot: "rightRoom", level: 11 },
+  { id: "party-hat", name: "お祝いハット", slot: "head", level: 12 },
+  { id: "cloud-rug", name: "雲のラグ", slot: "floor", level: 12 },
+  { id: "pencil", name: "お気に入り鉛筆", slot: "hand", level: 13 },
+  { id: "wall-clock", name: "森の掛け時計", slot: "wall", level: 13 },
+  { id: "royal-cape", name: "実りの羽飾り", slot: "neck", level: 14 },
+  { id: "study-desk", name: "相棒の勉強机", slot: "leftRoom", level: 14 },
+  { id: "gold-crown", name: "学びの王冠", slot: "head", level: 15 },
+  { id: "treasure-chest", name: "思い出の宝箱", slot: "rightRoom", level: 15 }
 ];
 
 const MASTERY_LABELS = ["未着手", "触れてみた", "だいたい分かった", "説明できそう", "仕事で活かせそう"];
+const FREE_STUDY_TITLE = "自由学習";
 const STORAGE_KEY = "manabi-partner-v1";
 
 const defaultState = {
@@ -105,6 +106,7 @@ const defaultState = {
 
 let state = loadState();
 let currentCard = null;
+let currentStudyKind = "card";
 let selectedMinutes = 10;
 let timerId = null;
 let timerSeconds = 0;
@@ -128,7 +130,9 @@ function normalizeState(saved) {
   const cards = Object.fromEntries(
     Object.entries(saved?.cards || {}).filter(([id]) => validIds.has(id))
   );
-  const sessions = (saved?.sessions || []).filter((session) => session && validIds.has(session.cardId));
+  const sessions = (saved?.sessions || []).filter((session) =>
+    session && (session.type === "free" || validIds.has(session.cardId))
+  );
   const recommendations = (saved?.recommendations || []).filter((id) => validIds.has(id));
   const equipped = Object.fromEntries(
     Object.keys(ITEM_SLOTS).map((slot) => {
@@ -191,6 +195,28 @@ function localDateKey(date = new Date()) {
 
 function cardProgress(id) {
   return state.cards[id] || { mastery: 0, minutes: 0, sessions: 0, lastStudied: null };
+}
+
+function sessionPresentation(session) {
+  if (session.type === "free") {
+    return {
+      title: FREE_STUDY_TITLE,
+      category: "カードを選ばない学習",
+      detail: "スキルガーデンには反映されません",
+      icon: "✎",
+      color: "#e8e1f2"
+    };
+  }
+  const card = CARDS.find((item) => item.id === session.cardId);
+  if (!card) return null;
+  const category = CATEGORIES[card.category];
+  return {
+    title: card.title,
+    category: category.name,
+    detail: MASTERY_LABELS[session.mastery],
+    icon: category.icon,
+    color: category.color
+  };
 }
 
 function getLevel() {
@@ -334,7 +360,7 @@ function renderSkills() {
   const overall = Math.round((total / (CARDS.length * 4)) * 100);
   const growthStage = overall === 0 ? 0 : Math.min(4, Math.ceil(overall / 25));
   const stageLabels = ["これから芽吹く庭", "芽吹きの庭", "若葉の庭", "花ひらく庭", "実りの大樹"];
-  const treeScale = [.82, .88, .94, 1, 1.06][growthStage];
+  const treeScale = [0, .5, .7, .9, 1.06][growthStage];
 
   $("#overall-percent").textContent = `${overall}%`;
   $("#overall-progress").style.width = `${overall}%`;
@@ -343,26 +369,27 @@ function renderSkills() {
   const gardenHero = $("#garden-hero");
   gardenHero.className = `garden-hero paper-card growth-${growthStage}`;
   gardenHero.querySelector(".garden-tree").style.setProperty("--tree-scale", treeScale);
+  $("#garden-empty").hidden = overall !== 0;
 
   const positions = [
     ["8%", "4px"], ["21%", "17px"], ["34%", "2px"], ["49%", "20px"],
     ["64%", "7px"], ["79%", "18px"], ["92%", "3px"]
   ];
   const flowerColors = ["#ef8d86", "#f0c85e", "#eea57e", "#7ebf91", "#75a9d1", "#ab8bc6", "#f19fbd"];
-  $("#flower-field").innerHTML = scores.map((score, index) => {
+  $("#flower-field").innerHTML = scores.filter((score) => score.percent > 0).map((score) => {
+    const index = scores.findIndex((candidate) => candidate.categoryId === score.categoryId);
     const bloom = score.percent / 100;
-    const scale = (.54 + bloom * .66).toFixed(2);
-    const opacity = (.3 + bloom * .7).toFixed(2);
+    const scale = (.72 + bloom * .48).toFixed(2);
     return `
       <span class="flower-cluster" title="${CATEGORIES[score.categoryId].name} ${score.percent}%"
-        style="--flower-x:${positions[index][0]};--flower-y:${positions[index][1]};--flower-color:${flowerColors[index]};--flower-scale:${scale};--flower-opacity:${opacity}">
+        style="--flower-x:${positions[index][0]};--flower-y:${positions[index][1]};--flower-color:${flowerColors[index]};--flower-scale:${scale}">
         <i class="flower-stem"></i><i class="flower-bloom"></i>
       </span>`;
   }).join("");
 
   $("#skill-list").innerHTML = scores.map((score) => {
     const category = CATEGORIES[score.categoryId];
-    const level = score.percent === 100 ? 5 : Math.floor(score.percent / 25) + 1;
+    const level = score.percent === 0 ? 0 : score.percent === 100 ? 5 : Math.floor(score.percent / 25) + 1;
     const learned = score.cards.filter((card) => cardProgress(card.id).mastery > 0).length;
     return `
       <article class="skill-item" style="--skill-color:${category.color}">
@@ -383,15 +410,15 @@ function renderJournal() {
 
   const recent = [...state.sessions].reverse().slice(0, historyVisibleCount);
   $("#history-list").innerHTML = recent.length ? recent.map((session) => {
-    const card = CARDS.find((item) => item.id === session.cardId);
-    const category = CATEGORIES[card.category];
+    const presentation = sessionPresentation(session);
+    if (!presentation) return "";
     return `
       <article class="history-item">
-        <span class="card-icon" style="background:${category.color};width:36px;height:36px">${category.icon}</span>
-        <div><h3>${card.title}</h3><p>${category.name} · ${MASTERY_LABELS[session.mastery]}</p></div>
+        <span class="card-icon" style="background:${presentation.color};width:36px;height:36px">${presentation.icon}</span>
+        <div><h3>${presentation.title}</h3><p>${presentation.category} · ${presentation.detail}</p></div>
         <time>${formatShortDate(session.date)}<br>${formatDuration(sessionSeconds(session), true)}</time>
       </article>`;
-  }).join("") : `<p class="history-empty">最初のカードを学ぶと、ここに自動で記録されます。</p>`;
+  }).join("") : `<p class="history-empty">学習を完了すると、ここに自動で記録されます。</p>`;
   $("#history-more").hidden = historyVisibleCount >= state.sessions.length;
 }
 
@@ -538,8 +565,10 @@ function renderEquipment() {
   $$("[data-equipped-slot]").forEach((layer) => {
     const slot = layer.dataset.equippedSlot;
     const item = REWARD_ITEMS.find((candidate) => candidate.id === state.equipped[slot]);
-    layer.textContent = item && item.level <= getLevel() ? item.emoji : "";
-    layer.setAttribute("aria-label", item?.name || "");
+    const visibleItem = item && item.level <= getLevel() ? item : null;
+    layer.innerHTML = visibleItem ? window.renderRewardArt(visibleItem.id) : "";
+    layer.dataset.item = visibleItem?.id || "";
+    layer.setAttribute("aria-label", visibleItem?.name || "");
   });
 
   $$(".cat").forEach((cat) => {
@@ -554,7 +583,7 @@ function itemCard(item, mode) {
   const action = mode === "dressup" && unlocked ? `data-equip-item="${item.id}"` : "";
   return `
     <button type="button" class="reward-item ${unlocked ? "unlocked" : "locked"} ${equipped ? "equipped" : ""}" ${action} ${unlocked ? "" : "disabled"}>
-      <span class="reward-emoji">${unlocked ? item.emoji : "?"}</span>
+      <span class="reward-art-wrap">${unlocked ? window.renderRewardArt(item.id) : `<span class="reward-lock">?</span>`}</span>
       <strong>${unlocked ? item.name : "？？？"}</strong>
       <small>${equipped ? "装着中" : unlocked ? ITEM_SLOTS[item.slot] : `Lv.${item.level}で解放`}</small>
     </button>`;
@@ -588,7 +617,7 @@ function renderPetPanels() {
   $("#equipped-strip").innerHTML = equippedItems.length
     ? equippedItems.map(({ slot, item }) => `
         <button type="button" data-clear-slot="${slot}" aria-label="${item.name}を外す">
-          <span>${item.emoji}</span><small>${ITEM_SLOTS[slot]}</small><i>×</i>
+          <span>${window.renderRewardArt(item.id)}</span><small>${ITEM_SLOTS[slot]}</small><i>×</i>
         </button>`).join("")
     : `<p>まだ何も身につけていません。</p>`;
 }
@@ -651,7 +680,7 @@ function clearEquipment(slot = null) {
 function exportData() {
   const payload = {
     app: "まなびの相棒手帳",
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     state
   };
@@ -724,11 +753,27 @@ function switchPage(target) {
 
 function openStudy(cardId) {
   currentCard = CARDS.find((card) => card.id === cardId);
+  currentStudyKind = "card";
   const category = CATEGORIES[currentCard.category];
   $("#dialog-icon").textContent = category.icon;
   $("#dialog-icon").style.background = category.color;
   $("#dialog-category").textContent = category.name;
   $("#dialog-title").textContent = currentCard.title;
+  $("#study-setup-note").textContent = "今日は何分やってみる？";
+  $("#study-setup").hidden = false;
+  $("#study-timer").hidden = true;
+  $("#study-result").hidden = true;
+  $("#study-dialog").showModal();
+}
+
+function openFreeStudy() {
+  currentCard = null;
+  currentStudyKind = "free";
+  $("#dialog-icon").textContent = "✎";
+  $("#dialog-icon").style.background = "#e8e1f2";
+  $("#dialog-category").textContent = "FREE STUDY";
+  $("#dialog-title").textContent = FREE_STUDY_TITLE;
+  $("#study-setup-note").textContent = "カードを選ばず、学習時間だけ記録します。";
   $("#study-setup").hidden = false;
   $("#study-timer").hidden = true;
   $("#study-result").hidden = true;
@@ -743,13 +788,14 @@ function beginTimer(minutes) {
   recordedSeconds = 0;
   $("#study-setup").hidden = true;
   $("#study-timer").hidden = false;
-  $("#timer-card-title").textContent = currentCard.title;
+  $("#timer-card-title").textContent = currentStudyKind === "free" ? FREE_STUDY_TITLE : currentCard.title;
   $("#timer-pet-name").textContent = state.companionName;
   $("#device-timer-minutes").textContent = `${selectedMinutes}分`;
   $("#start-device-timer").textContent = "⏱ iPhoneタイマーも開始";
   $("#start-device-timer").classList.remove("requested");
   deviceTimerRequested = false;
-  $("#ai-prompt-text").value = buildAiPrompt();
+  $("#ai-study-box").hidden = currentStudyKind === "free";
+  $("#ai-prompt-text").value = currentStudyKind === "card" ? buildAiPrompt() : "";
   updateTimerDisplay();
   clearInterval(timerId);
   timerId = setInterval(updateTimerFromClock, 1000);
@@ -771,6 +817,7 @@ function updateTimerDisplay() {
 }
 
 function buildAiPrompt() {
+  if (!currentCard) return "";
   const category = CATEGORIES[currentCard.category];
   return `あなたは、人間ドック後の健康相談を担当する保健師向けの学習コーチです。
 
@@ -847,6 +894,8 @@ function showResult() {
   $("#study-timer").hidden = true;
   $("#study-result").hidden = false;
   $("#recorded-time").textContent = `学習時間 ${formatDuration(recordedSeconds, true)} を記録します`;
+  $("#card-study-result").hidden = currentStudyKind !== "card";
+  $("#free-study-result").hidden = currentStudyKind !== "free";
 }
 
 function completeStudy(mastery) {
@@ -872,6 +921,25 @@ function completeStudy(mastery) {
   showToast(`${state.companionName}が喜んでいます！ +${actualMinutes + mastery * 5} XP`);
 }
 
+function completeFreeStudy() {
+  const actualMinutes = Math.max(1, roundedMinutes(recordedSeconds));
+  const xpEarned = Math.max(1, Math.ceil(actualMinutes / 5));
+  state.sessions.push({
+    type: "free",
+    cardId: null,
+    title: FREE_STUDY_TITLE,
+    minutes: actualMinutes,
+    seconds: recordedSeconds,
+    xpEarned,
+    date: new Date().toISOString()
+  });
+  state.xp += xpEarned;
+  saveState();
+  $("#study-dialog").close();
+  renderAll();
+  showToast(`自由学習を記録しました。+${xpEarned} XP`);
+}
+
 function showToast(message) {
   const toast = $("#toast");
   toast.textContent = message;
@@ -886,6 +954,9 @@ document.addEventListener("click", (event) => {
   const study = event.target.closest("[data-study]");
   if (study) openStudy(study.dataset.study);
 
+  const freeStudy = event.target.closest("[data-free-study]");
+  if (freeStudy) openFreeStudy();
+
   const filter = event.target.closest("[data-filter]");
   if (filter) {
     activeFilter = filter.dataset.filter;
@@ -898,6 +969,9 @@ document.addEventListener("click", (event) => {
 
   const mastery = event.target.closest("[data-mastery]");
   if (mastery) completeStudy(Number(mastery.dataset.mastery));
+
+  const completeFree = event.target.closest("[data-complete-free]");
+  if (completeFree) completeFreeStudy();
 
   const chartBar = event.target.closest("[data-chart-label]");
   if (chartBar) showToast(chartBar.dataset.chartLabel);
