@@ -67,6 +67,18 @@
           </div>
         </article>
 
+        <article class="free-study-card paper-card">
+          <span class="free-study-illustration" aria-hidden="true">
+            <i class="free-note"></i><i class="free-pencil"></i><i class="free-sparkle one"></i><i class="free-sparkle two"></i>
+          </span>
+          <div>
+            <span class="section-kicker">FREE STUDY</span>
+            <h2>自由学習を記録</h2>
+            <p>本・研修・調べものなどを、カードを選ばず時間だけ残せます。スキルには反映せず、相棒XPを少し獲得します。</p>
+          </div>
+          <button type="button" data-free-study>記録する</button>
+        </article>
+
         <div class="section-heading">
           <div>
             <span class="section-kicker">PICK UP</span>
@@ -122,6 +134,10 @@
             <span class="tree-trunk"></span>
             <span class="tree-branch branch-left"></span>
             <span class="tree-branch branch-right"></span>
+          </div>
+          <div class="garden-empty" id="garden-empty" aria-hidden="true">
+            <span class="seed-mound"></span><span class="seed"></span>
+            <small>最初の学びで芽が出るよ</small>
           </div>
           <div class="garden-hill hill-back" aria-hidden="true"></div>
           <div class="garden-hill hill-front" aria-hidden="true"></div>
@@ -336,7 +352,7 @@
         <span class="dialog-icon" id="dialog-icon">✿</span>
         <span class="section-kicker" id="dialog-category"></span>
         <h2 id="dialog-title"></h2>
-        <p>今日は何分やってみる？</p>
+        <p id="study-setup-note">今日は何分やってみる？</p>
         <div class="duration-grid">
           <button type="button" data-minutes="5">5分<small>ちょこっと</small></button>
           <button type="button" data-minutes="10">10分<small>おすすめ</small></button>
@@ -351,7 +367,7 @@
           <div><strong id="timer-display">10:00</strong><span id="timer-status">のこり</span></div>
         </div>
         <p><span id="timer-pet-name">こむぎ</span>も隣でいっしょに勉強中…</p>
-        <section class="ai-study-box" aria-labelledby="ai-study-title">
+        <section class="ai-study-box" id="ai-study-box" aria-labelledby="ai-study-title">
           <div>
             <span class="section-kicker">AI STUDY</span>
             <h3 id="ai-study-title">生成AIで勉強を始める</h3>
@@ -385,18 +401,26 @@
         <div class="celebration">✦　🎉　✦</div>
         <h2>おつかれさまでした！</h2>
         <p class="recorded-time" id="recorded-time"></p>
-        <p>今の理解にいちばん近いものは？</p>
-        <div class="mastery-options">
-          <button type="button" data-mastery="1"><span>🌱</span>触れてみた</button>
-          <button type="button" data-mastery="2"><span>🌿</span>だいたい分かった</button>
-          <button type="button" data-mastery="3"><span>🌷</span>説明できそう</button>
-          <button type="button" data-mastery="4"><span>✨</span>仕事で活かせそう</button>
+        <div id="card-study-result">
+          <p>今の理解にいちばん近いものは？</p>
+          <div class="mastery-options">
+            <button type="button" data-mastery="1"><span>🌱</span>触れてみた</button>
+            <button type="button" data-mastery="2"><span>🌿</span>だいたい分かった</button>
+            <button type="button" data-mastery="3"><span>🌷</span>説明できそう</button>
+            <button type="button" data-mastery="4"><span>✨</span>仕事で活かせそう</button>
+          </div>
+        </div>
+        <div class="free-study-result" id="free-study-result" hidden>
+          <span class="free-study-check" aria-hidden="true">✓</span>
+          <p>自由学習として手帳に残します。スキルガーデンは変えず、5分ごとに1XPを受け取れます。</p>
+          <button type="button" class="primary-button" data-complete-free>自由学習を記録する</button>
         </div>
       </div>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status"></div>
+  <script src="reward-art.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
