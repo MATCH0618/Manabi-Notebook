@@ -77,6 +77,7 @@ const REWARD_ITEMS = [
   { id: "gold-crown", name: "学びの王冠", slot: "head", level: 15 },
   { id: "treasure-chest", name: "思い出の宝箱", slot: "rightRoom", level: 15 }
 ];
+const WEARABLE_SLOTS = new Set(["head", "neck", "hand"]);
 
 const MASTERY_LABELS = ["未着手", "触れてみた", "だいたい分かった", "説明できそう", "仕事で活かせそう"];
 const FREE_STUDY_TITLE = "自由学習";
@@ -566,7 +567,7 @@ function renderEquipment() {
     const slot = layer.dataset.equippedSlot;
     const item = REWARD_ITEMS.find((candidate) => candidate.id === state.equipped[slot]);
     const visibleItem = item && item.level <= getLevel() ? item : null;
-    layer.innerHTML = visibleItem ? window.renderRewardArt(visibleItem.id) : "";
+    layer.innerHTML = visibleItem ? window.renderRewardArt(visibleItem.id, WEARABLE_SLOTS.has(slot) ? "worn" : "icon") : "";
     layer.dataset.item = visibleItem?.id || "";
     layer.setAttribute("aria-label", visibleItem?.name || "");
   });
@@ -581,12 +582,26 @@ function itemCard(item, mode) {
   const unlocked = item.level <= getLevel();
   const equipped = state.equipped[item.slot] === item.id;
   const action = mode === "dressup" && unlocked ? `data-equip-item="${item.id}"` : "";
+  const previewContext = mode === "dressup" && WEARABLE_SLOTS.has(item.slot) ? "preview" : "icon";
+  const kind = WEARABLE_SLOTS.has(item.slot) ? "wearable-item" : "room-item";
   return `
-    <button type="button" class="reward-item ${unlocked ? "unlocked" : "locked"} ${equipped ? "equipped" : ""}" ${action} ${unlocked ? "" : "disabled"}>
-      <span class="reward-art-wrap">${unlocked ? window.renderRewardArt(item.id) : `<span class="reward-lock">?</span>`}</span>
+    <button type="button" class="reward-item ${kind} ${unlocked ? "unlocked" : "locked"} ${equipped ? "equipped" : ""}" ${action} ${unlocked ? "" : "disabled"}>
+      <span class="reward-art-wrap">${unlocked ? window.renderRewardArt(item.id, previewContext) : `<span class="reward-lock">?</span>`}</span>
       <strong>${unlocked ? item.name : "？？？"}</strong>
       <small>${equipped ? "装着中" : unlocked ? ITEM_SLOTS[item.slot] : `Lv.${item.level}で解放`}</small>
     </button>`;
+}
+
+function wardrobeGroup(title, note, items, tone) {
+  if (!items.length) return "";
+  return `
+    <section class="wardrobe-group ${tone}">
+      <div class="wardrobe-group-heading">
+        <div><span>${tone === "wear" ? "DRESS UP" : "ROOM STYLE"}</span><h3>${title}</h3></div>
+        <small>${note}</small>
+      </div>
+      <div class="item-grid">${items.map((item) => itemCard(item, "dressup")).join("")}</div>
+    </section>`;
 }
 
 function renderPetPanels() {
@@ -605,7 +620,10 @@ function renderPetPanels() {
     button.classList.toggle("active", button.dataset.petPanel === petPanel);
   });
 
-  $("#dressup-grid").innerHTML = unlocked.map((item) => itemCard(item, "dressup")).join("");
+  $("#dressup-grid").innerHTML = [
+    wardrobeGroup("相棒のおしゃれ", "体に合わせた着用イメージで選べます", unlocked.filter((item) => WEARABLE_SLOTS.has(item.slot)), "wear"),
+    wardrobeGroup("お部屋のコーデ", "家具や壁飾りを組み合わせられます", unlocked.filter((item) => !WEARABLE_SLOTS.has(item.slot)), "room")
+  ].join("");
   $("#collection-grid").innerHTML = REWARD_ITEMS.map((item) => itemCard(item, "collection")).join("");
 
   const equippedItems = Object.entries(state.equipped)
@@ -658,10 +676,12 @@ function saveShortcutName() {
 function equipRewardItem(itemId) {
   const item = REWARD_ITEMS.find((candidate) => candidate.id === itemId);
   if (!item || item.level > getLevel()) return;
-  state.equipped[item.slot] = state.equipped[item.slot] === item.id ? null : item.id;
+  const removing = state.equipped[item.slot] === item.id;
+  state.equipped[item.slot] = removing ? null : item.id;
   saveState();
   renderPet();
-  showToast(state.equipped[item.slot] ? `${item.name}を使いました` : `${item.name}を外しました`);
+  const action = WEARABLE_SLOTS.has(item.slot) ? "身につけました" : "お部屋に飾りました";
+  showToast(removing ? `${item.name}を外しました` : `${item.name}を${action}`);
 }
 
 function clearEquipment(slot = null) {

@@ -116,12 +116,12 @@ main { padding: 7px 18px calc(100px + env(safe-area-inset-bottom)); }
 .cat-scarf::after { content: ""; position: absolute; width: 19px; height: 37px; background: var(--coral); right: 5px; top: 5px; border-radius: 4px 4px 12px 12px; transform: rotate(-9deg); }
 .cat.has-neck-item .cat-scarf { opacity: 0; }
 .wearable-layer {
-  position: absolute; z-index: 8; display: grid; place-items: center; pointer-events: none;
-  filter: drop-shadow(0 3px 3px rgba(70, 50, 40, .18));
+  position: absolute; inset: 0; width: 120px; height: 145px; display: grid; place-items: center;
+  pointer-events: none; filter: drop-shadow(0 3px 3px rgba(70, 50, 40, .16));
 }
-.head-layer { width: 78px; height: 58px; left: 21px; top: -10px; }
-.neck-layer { width: 70px; height: 45px; left: 25px; top: 79px; }
-.hand-layer { width: 54px; height: 54px; right: -3px; top: 94px; transform: rotate(8deg); }
+.head-layer { z-index: 7; }
+.neck-layer { z-index: 8; }
+.hand-layer { z-index: 9; }
 .wearable-layer .reward-art { width: 100%; height: 100%; }
 .pet-name { position: absolute; z-index: 5; bottom: -8px; left: 50%; transform: translateX(-50%); padding: 4px 11px; background: white; border-radius: 999px; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .sparkle { position: absolute; color: #d7a854; animation: float 2.4s ease-in-out infinite; }
@@ -406,6 +406,18 @@ main { padding: 7px 18px calc(100px + env(safe-area-inset-bottom)); }
 .equipped-strip button small { color: var(--muted); font-size: 7px; }
 .equipped-strip button i { position: absolute; right: 3px; top: 1px; color: var(--muted); font-size: 10px; font-style: normal; }
 .equipped-strip p { margin: 2px; color: var(--muted); font-size: 9px; }
+.wardrobe-groups { display: grid; gap: 16px; }
+.wardrobe-group {
+  padding: 12px; border: 1px solid var(--line); border-radius: 21px;
+  background: linear-gradient(145deg, #fffefd, #fff7f2);
+}
+.wardrobe-group.room { background: linear-gradient(145deg, #fffefd, #f3faf5); }
+.wardrobe-group-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 0 2px 10px; }
+.wardrobe-group-heading span { color: var(--coral-dark); font-size: 7px; font-weight: 900; letter-spacing: .14em; }
+.wardrobe-group.room .wardrobe-group-heading span { color: var(--mint-dark); }
+.wardrobe-group-heading h3 { margin: 2px 0 0; font-size: 14px; }
+.wardrobe-group-heading small { max-width: 145px; color: var(--muted); font-size: 7px; line-height: 1.45; text-align: right; }
+.wardrobe-group .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .item-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .reward-item {
   min-width: 0; min-height: 113px; border: 1px solid var(--line); border-radius: 17px; padding: 10px 5px;
@@ -420,6 +432,27 @@ main { padding: 7px 18px calc(100px + env(safe-area-inset-bottom)); }
 .reward-item.equipped small { color: var(--coral-dark); font-weight: 800; }
 .reward-item.locked { border-style: dashed; background: #f6f2ef; color: #a79d98; }
 .reward-item.locked .reward-art-wrap { filter: none; }
+.wardrobe-group .reward-item {
+  min-height: 158px; grid-template-rows: 100px auto auto; padding: 7px 7px 10px;
+  border-color: rgba(231, 216, 207, .9); box-shadow: 0 6px 14px rgba(91, 70, 59, .06);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.wardrobe-group .reward-item:active { transform: scale(.97); }
+.wardrobe-group .reward-art-wrap { width: 88px; height: 96px; filter: drop-shadow(0 5px 4px rgba(70, 50, 40, .12)); }
+.wardrobe-group .reward-art-wrap .reward-art { width: 88px; height: 96px; }
+.wardrobe-group .wearable-item .reward-art-wrap {
+  border-radius: 18px; background: radial-gradient(circle at 50% 35%, #fffaf0, #f9ebe5 72%);
+}
+.wardrobe-group.room .reward-art-wrap {
+  width: 78px; height: 88px; border-radius: 18px; background: radial-gradient(circle at 50% 45%, #fff, #edf6ef 75%);
+}
+.wardrobe-group.room .reward-art-wrap .reward-art { width: 70px; height: 70px; }
+.wardrobe-group .reward-item strong { font-size: 10px; }
+.wardrobe-group .reward-item small { margin-top: 2px; font-size: 7px; }
+.wardrobe-group .reward-item.equipped {
+  border: 2px solid var(--coral); background: #fff8f3; box-shadow: 0 7px 18px rgba(217, 110, 107, .14);
+}
+.wardrobe-group.room .reward-item.equipped { border-color: var(--mint-dark); background: #f4fbf6; box-shadow: 0 7px 18px rgba(89, 143, 113, .13); }
 .secondary-button {
   width: 100%; margin-top: 11px; border: 1px solid var(--line); border-radius: 14px; padding: 11px;
   background: var(--cream); color: var(--muted); font-size: 10px; font-weight: 700;

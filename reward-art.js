@@ -34,7 +34,47 @@
     "treasure-chest": `<path d="M16 39c0-16 12-27 32-27s32 11 32 27Z" fill="#d79a68" ${ink}/><rect x="13" y="39" width="70" height="45" rx="6" fill="#bd7b55" ${ink}/><path d="M13 53h70M28 14v70M68 14v70" fill="none" stroke="#f0c36c" stroke-width="7"/><rect x="41" y="50" width="15" height="18" rx="3" fill="#f4cf69" ${ink}/><circle cx="48" cy="57" r="3" fill="#765b50"/>`
   };
 
-  window.renderRewardArt = (itemId) => {
+  const wornInk = 'stroke="#765b50" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+  const paw = (cx, cy, rotate = 0) => `<g transform="rotate(${rotate} ${cx} ${cy})"><ellipse cx="${cx}" cy="${cy}" rx="13" ry="9" fill="#edc89f" ${wornInk}/><path d="M${cx - 6} ${cy - 1}q6 4 12 0" fill="none" stroke="#d6aa86" stroke-width="1.6"/></g>`;
+
+  // 着用時は単体アイコンを拡大せず、相棒の120×145の輪郭に合わせた専用図形を使う。
+  const wornArt = {
+    "red-ribbon": `<path d="M16 28c8 4 15 7 24 10" fill="none" stroke="#c96572" stroke-width="5"/><path d="M30 31C18 18 4 22 7 34c3 10 14 9 24 4Z" fill="#f49aa3" ${wornInk}/><path d="M35 32c10-12 24-7 20 4-3 8-13 8-23 3Z" fill="#ef7f8c" ${wornInk}/><circle cx="31" cy="36" r="7" fill="#ffd4d3" ${wornInk}/><path d="m28 42-5 20 10-7 8 7-5-21" fill="#ed7e89" ${wornInk}/><path d="M15 29c6 3 12 4 18 5" fill="none" stroke="#ffd5d4" stroke-width="2"/>`,
+    "flower-hat": `<path d="M17 36c22 11 64 11 86-1" fill="none" stroke="#c99a62" stroke-width="8"/><path d="M24 36c5-20 18-30 36-30s31 11 37 30c-22 8-50 8-73 0Z" fill="#f7d7a6" ${wornInk}/><path d="M17 36c22 10 64 10 86-1" fill="none" stroke="#f0bd78" stroke-width="4"/><g fill="#f59aaa" ${wornInk}><circle cx="31" cy="30" r="8"/><circle cx="46" cy="37" r="8"/><circle cx="63" cy="38" r="8"/><circle cx="79" cy="32" r="8"/></g><g fill="#ffe07a"><circle cx="31" cy="30" r="2.5"/><circle cx="46" cy="37" r="2.5"/><circle cx="63" cy="38" r="2.5"/><circle cx="79" cy="32" r="2.5"/></g>`,
+    "beret": `<path d="M19 37c5-23 23-35 45-33 22 2 35 14 37 35-22 8-59 8-82-2Z" fill="#b99aca" ${wornInk}/><path d="M20 38c20 8 59 8 80 0" fill="none" stroke="#8e71a6" stroke-width="5"/><path d="M59 7c-1-5 2-8 7-8" fill="none" ${wornInk}/><path d="M34 22c15-8 31-9 45-4" fill="none" stroke="#dbc5e5" stroke-width="4"/>`,
+    "nurse-cap": `<path d="M22 38c12-25 63-25 76 0l-8 15c-21-8-39-8-60 0Z" fill="#fffaf4" ${wornInk}/><path d="M28 40c20-7 44-7 64 0" fill="none" stroke="#ef9a96" stroke-width="5"/><path d="M60 20v17M51 28h18" fill="none" stroke="#ef7f83" stroke-width="6"/>`,
+    "party-hat": `<path d="m31 42 30-39 29 40c-19 7-40 7-59-1Z" fill="#f29aa0" ${wornInk}/><path d="m45 21 28 1M38 32l43 1" stroke="#f8d86e" stroke-width="6"/><circle cx="61" cy="4" r="7" fill="#f4c95f" ${wornInk}/><path d="M31 43c19 7 40 7 59 0" fill="none" ${wornInk}/><path d="M35 44c-3 19 5 31 17 37M86 44c3 18-5 30-17 37" fill="none" stroke="#d86f79" stroke-width="2"/>`,
+    "gold-crown": `<path d="M23 12 39 29 59 4l20 25 19-17-7 32c-22 7-42 7-64 0Z" fill="#f2c95f" ${wornInk}/><path d="M27 36c21 7 43 7 64 0" fill="none" stroke="#fff0a2" stroke-width="5"/><circle cx="59" cy="5" r="4" fill="#f19793" ${wornInk}/><circle cx="23" cy="12" r="5" fill="#8bb6c9" ${wornInk}/><circle cx="98" cy="12" r="5" fill="#8bb6c9" ${wornInk}/>`,
+    "green-bow": `<path d="M27 92c18 8 47 8 66 0" fill="none" stroke="#5c9474" stroke-width="6"/><path d="M54 95c-12-13-30-12-30 2 0 12 16 15 30 5Z" fill="#8bc5a0" ${wornInk}/><path d="M66 95c12-13 30-12 30 2 0 12-16 15-30 5Z" fill="#78b88f" ${wornInk}/><rect x="53" y="91" width="14" height="17" rx="6" fill="#dff1e5" ${wornInk}/>`,
+    "yellow-scarf": `<path d="M24 89c20 10 51 10 72 0l-5 23c-18 8-44 8-62 0Z" fill="#f2ca67" ${wornInk}/><path d="M28 97c19 7 44 7 63 0" fill="none" stroke="#ffe59a" stroke-width="3"/><path d="m73 109 21 3-8 31-17-8Z" fill="#eab855" ${wornInk}/><path d="m76 123 13 5M73 132l13 5" fill="none" ${wornInk}/>`,
+    "pearl-necklace": `<path d="M28 91c3 28 16 43 32 43s29-15 32-43" fill="none" stroke="#e8dcc7" stroke-width="8" stroke-linecap="round" stroke-dasharray="1 10"/><circle cx="60" cy="131" r="9" fill="#fff8e9" ${wornInk}/><path d="M56 127c4-4 8-4 11-1" fill="none" stroke="#fff" stroke-width="3"/>`,
+    "star-medal": `<path d="M40 91c3 10 10 20 20 28 10-8 17-18 20-28" fill="none" stroke="#7fa5c2" stroke-width="8"/><path d="M51 91c1 10 4 19 9 28 5-9 8-18 9-28" fill="none" stroke="#f19a94" stroke-width="8"/><circle cx="60" cy="125" r="15" fill="#f3c45e" ${wornInk}/><path d="m60 115 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z" fill="#fff1a9" ${wornInk}/>`,
+    "royal-cape": `<path d="M28 91c8 9 16 12 32 12s24-3 32-12l12 46c-23 10-65 10-88 0Z" fill="#8ca7c7" ${wornInk}/><path d="M28 91c17 9 47 9 64 0" fill="none" stroke="#f5d57d" stroke-width="7"/><path d="m60 110 4 8 9 2-7 6 2 9-8-4-8 4 2-9-7-6 9-2Z" fill="#f5d57d" ${wornInk}/><path d="M88 94c9-12 18-15 26-11-2 13-10 22-24 27" fill="#f3c55e" ${wornInk}/>`,
+    "study-book": `<path d="M18 105c17-7 31-3 42 7v31c-12-9-26-12-42-7Z" fill="#fff5dc" ${wornInk}/><path d="M102 105c-17-7-31-3-42 7v31c12-9 26-12 42-7Z" fill="#e7f2d7" ${wornInk}/><path d="M60 112v31M29 116h20M29 125h21M71 116h20M71 125h18" fill="none" ${wornInk}/><path d="m53 107 7-9 7 9" fill="#f29a92" ${wornInk}/>${paw(31, 126, 12)}${paw(89, 126, -12)}`,
+    "tea-cup": `<path d="M66 109h33v19c0 10-7 16-17 16s-16-6-16-16Z" fill="#fff3df" ${wornInk}/><path d="M99 114h5c11 0 10 15 1 17h-6" fill="none" ${wornInk}/><path d="M72 117h22" stroke="#eea39d" stroke-width="4"/><path d="M76 104c-5-7 5-8 0-14M87 104c-5-7 5-8 0-14" fill="none" ${wornInk}/>${paw(70, 120, 16)}`,
+    "magnifier": `<circle cx="87" cy="108" r="18" fill="#dff1ef" ${wornInk}/><circle cx="87" cy="108" r="12" fill="#f7ffff" stroke="#9ec9cc" stroke-width="2"/><path d="m75 121-18 20" fill="none" stroke="#765b50" stroke-width="8"/><path d="M79 101c4-4 9-5 13-3" fill="none" stroke="#fff" stroke-width="3"/>${paw(62, 133, -18)}`,
+    "clipboard": `<rect x="65" y="96" width="39" height="48" rx="5" fill="#f2d49a" ${wornInk}/><rect x="76" y="91" width="18" height="10" rx="4" fill="#87b7a2" ${wornInk}/><path d="M73 111h23M73 120h23M73 129h15" fill="none" ${wornInk}/><path d="m90 134 4 4 8-10" fill="none" stroke="#6ba276" stroke-width="3"/>${paw(69, 122, 14)}`,
+    "pencil": `<path d="m50 138 8-20 34-25 12 14-34 25Z" fill="#f2c75f" ${wornInk}/><path d="m92 93 12 14 6-8-10-11Z" fill="#f19998" ${wornInk}/><path d="m50 138 20-6-12-14Z" fill="#f0d2a1" ${wornInk}/><path d="m50 138 6-2-4-4Z" fill="#765b50"/>${paw(66, 126, -20)}${paw(84, 112, -20)}`
+  };
+
+  const petBase = `
+    <path d="M18 49 28 10l25 28M102 49 92 10 67 38" fill="#d7ab83" ${wornInk}/>
+    <path d="m26 34 5-15 11 16M94 34l-5-15-11 16" fill="#f3c2b7"/>
+    <ellipse cx="60" cy="65" rx="49" ry="40" fill="#edc89f" ${wornInk}/>
+    <ellipse cx="60" cy="78" rx="18" ry="22" fill="#fae4cb"/>
+    <ellipse cx="42" cy="61" rx="3.5" ry="5" fill="#635044"/><ellipse cx="78" cy="61" rx="3.5" ry="5" fill="#635044"/>
+    <ellipse cx="60" cy="72" rx="4" ry="3" fill="#bd817b"/><path d="M54 77q6 7 12 0" fill="none" ${wornInk}/>
+    <ellipse cx="33" cy="74" rx="8" ry="4" fill="#eaa49b" opacity=".45"/><ellipse cx="87" cy="74" rx="8" ry="4" fill="#eaa49b" opacity=".45"/>
+    <path d="M27 143c0-34 12-51 33-51s33 17 33 51Z" fill="#ddb58e" ${wornInk}/>
+    <ellipse cx="43" cy="139" rx="15" ry="8" fill="#edc89f"/><ellipse cx="77" cy="139" rx="15" ry="8" fill="#edc89f"/>`;
+
+  window.renderRewardArt = (itemId, context = "icon") => {
+    if (context === "worn" && wornArt[itemId]) {
+      return `<svg class="reward-art reward-art-worn" viewBox="0 0 120 145" aria-hidden="true" focusable="false">${wornArt[itemId]}</svg>`;
+    }
+    if (context === "preview" && wornArt[itemId]) {
+      return `<svg class="reward-art reward-art-preview" viewBox="0 0 120 145" aria-hidden="true" focusable="false">${petBase}${wornArt[itemId]}</svg>`;
+    }
     const body = art[itemId];
     if (!body) return "";
     return `<svg class="reward-art" viewBox="0 0 96 96" aria-hidden="true" focusable="false">${body}</svg>`;
