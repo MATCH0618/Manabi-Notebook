@@ -567,10 +567,20 @@ function renderEquipment() {
     const slot = layer.dataset.equippedSlot;
     const item = REWARD_ITEMS.find((candidate) => candidate.id === state.equipped[slot]);
     const visibleItem = item && item.level <= getLevel() ? item : null;
-    layer.innerHTML = visibleItem ? window.renderRewardArt(visibleItem.id, WEARABLE_SLOTS.has(slot) ? "worn" : "icon") : "";
+    let context = WEARABLE_SLOTS.has(slot) ? "worn" : "icon";
+    if (slot === "floor" && visibleItem?.id === "soft-cushion") context = "room-back";
+    layer.innerHTML = visibleItem ? window.renderRewardArt(visibleItem.id, context) : "";
     layer.dataset.item = visibleItem?.id || "";
     layer.setAttribute("aria-label", visibleItem?.name || "");
   });
+
+  const floorFrontLayer = $('[data-equipped-slot-front="floor"]');
+  const floorItem = REWARD_ITEMS.find((candidate) => candidate.id === state.equipped.floor);
+  const visibleFloorItem = floorItem && floorItem.level <= getLevel() ? floorItem : null;
+  floorFrontLayer.innerHTML = visibleFloorItem?.id === "soft-cushion"
+    ? window.renderRewardArt(visibleFloorItem.id, "room-front")
+    : "";
+  floorFrontLayer.dataset.item = visibleFloorItem?.id === "soft-cushion" ? visibleFloorItem.id : "";
 
   $$(".cat").forEach((cat) => {
     cat.classList.toggle("has-neck-item", Boolean(state.equipped.neck));

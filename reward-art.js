@@ -6,8 +6,8 @@
     "study-book": `<path d="M15 25c14-6 25-3 33 5v48c-9-8-20-11-33-6z" fill="#fff5dc" ${ink}/><path d="M81 25c-14-6-25-3-33 5v48c9-8 20-11 33-6z" fill="#e7f2d7" ${ink}/><path d="M48 30v48M23 38h16M23 48h17M57 38h16M57 48h14" fill="none" ${ink}/><path d="m42 22 6-9 6 9" fill="#f29a92" ${ink}/>` ,
     "green-bow": `<path d="M44 44C31 30 14 30 13 45c-1 13 18 16 31 5z" fill="#8bc5a0" ${ink}/><path d="M52 44c13-14 30-14 31 1 1 13-18 16-31 5z" fill="#78b88f" ${ink}/><rect x="40" y="39" width="16" height="17" rx="6" fill="#dff1e5" ${ink}/>` ,
     "house-plant": `<path d="M48 48C28 42 21 26 30 17c11 2 19 15 18 31Z" fill="#82bf8d" ${ink}/><path d="M49 49c19-7 29-22 21-32-12 2-21 15-21 32Z" fill="#65ad7d" ${ink}/><path d="M48 48c-13-2-24 5-25 17 13 4 23-1 25-17Zm1 0c13-2 24 5 25 17-13 4-23-1-25-17Z" fill="#9bd09b" ${ink}/><path d="M48 38v31" fill="none" ${ink}/><path d="M25 66h47l-6 20H31Z" fill="#e9a681" ${ink}/><path d="M29 72h39" fill="none" ${ink}/>` ,
-    "soft-cushion": `<path d="M17 43c0-10 8-18 18-18h26c10 0 18 8 18 18v27H17Z" fill="#f3b9b4" ${ink}/><rect x="10" y="49" width="15" height="29" rx="7" fill="#ef9e9b" ${ink}/><rect x="71" y="49" width="15" height="29" rx="7" fill="#ef9e9b" ${ink}/><path d="M20 67h56M28 79v6M68 79v6" fill="none" ${ink}/><circle cx="48" cy="48" r="3" fill="#fff4e8"/>` ,
-    "flower-hat": `<path d="M19 55c12 10 46 10 58 0" fill="none" ${ink}/><path d="M24 57c5-20 14-30 24-30s19 10 24 30" fill="#f7d7a6" ${ink}/><g fill="#f59aaa" ${ink}><circle cx="27" cy="34" r="9"/><circle cx="48" cy="25" r="9"/><circle cx="69" cy="34" r="9"/></g><g fill="#ffd66f"><circle cx="27" cy="34" r="3"/><circle cx="48" cy="25" r="3"/><circle cx="69" cy="34" r="3"/></g><path d="M19 56h58" fill="none" ${ink}/>` ,
+    "soft-cushion": `<path d="M14 62V39c0-14 11-25 25-25h18c14 0 25 11 25 25v23" fill="#f6c8c2" ${ink}/><path d="M22 52V39c0-9 7-16 16-16h20c9 0 16 7 16 16v13" fill="#ffd9d3" ${ink}/><rect x="7" y="46" width="20" height="34" rx="10" fill="#ef9e9b" ${ink}/><rect x="69" y="46" width="20" height="34" rx="10" fill="#ef9e9b" ${ink}/><path d="M18 63h60v19H18Z" fill="#f3b2ae" ${ink}/><path d="M23 82v6M73 82v6" fill="none" ${ink}/><circle cx="48" cy="39" r="3" fill="#fff4e8"/>` ,
+    "flower-hat": `<path d="M15 55C28 38 38 32 48 32s20 6 33 23" fill="none" stroke="#6f9d73" stroke-width="5" stroke-linecap="round"/><path d="M24 46c-8-7-12-2-9 5 4 6 10 4 14-1M67 43c7-9 14-5 12 3-2 7-9 8-15 3" fill="#8fc58f" ${ink}/><g fill="#f7a2ad" ${ink}><circle cx="27" cy="43" r="7"/><circle cx="48" cy="35" r="8"/><circle cx="69" cy="43" r="7"/></g><g fill="#ffe58a"><circle cx="27" cy="43" r="2.5"/><circle cx="48" cy="35" r="3"/><circle cx="69" cy="43" r="2.5"/></g>` ,
     "tea-cup": `<path d="M20 37h48v27c0 12-9 20-24 20s-24-8-24-20Z" fill="#fff3df" ${ink}/><path d="M68 43h7c15 0 14 21 1 24h-8" fill="none" ${ink}/><path d="M15 84h61" fill="none" ${ink}/><path d="M35 29c-7-8 6-10 0-18M50 29c-7-8 6-10 0-18" fill="none" ${ink}/><path d="M25 50h38" stroke="#eea39d" stroke-width="5"/>` ,
     "star-poster": `<rect x="17" y="13" width="62" height="70" rx="7" fill="#7189b7" ${ink}/><path d="M47 25 53 39l15 1-12 10 4 15-13-8-13 8 4-15-12-10 15-1Z" fill="#ffe08a" ${ink}/><circle cx="29" cy="24" r="3" fill="#fff"/><circle cx="69" cy="69" r="3" fill="#fff"/><path d="M26 74c12-13 33-14 45 0" fill="#536d9c"/>` ,
     "fluffy-bed": `<path d="M15 47h66v33H15Z" fill="#f6c4bd" ${ink}/><path d="M15 37c0-8 6-14 14-14h14c7 0 13 6 13 14v10H15Z" fill="#fff3df" ${ink}/><path d="M56 33h16c5 0 9 4 9 9v5H56Z" fill="#e7f1d8" ${ink}/><path d="M15 62h66M20 80v7M76 80v7" fill="none" ${ink}/>` ,
@@ -40,7 +40,7 @@
   // 着用時は単体アイコンを拡大せず、相棒の120×145の輪郭に合わせた専用図形を使う。
   const wornArt = {
     "red-ribbon": `<path d="M16 28c8 4 15 7 24 10" fill="none" stroke="#c96572" stroke-width="5"/><path d="M30 31C18 18 4 22 7 34c3 10 14 9 24 4Z" fill="#f49aa3" ${wornInk}/><path d="M35 32c10-12 24-7 20 4-3 8-13 8-23 3Z" fill="#ef7f8c" ${wornInk}/><circle cx="31" cy="36" r="7" fill="#ffd4d3" ${wornInk}/><path d="m28 42-5 20 10-7 8 7-5-21" fill="#ed7e89" ${wornInk}/><path d="M15 29c6 3 12 4 18 5" fill="none" stroke="#ffd5d4" stroke-width="2"/>`,
-    "flower-hat": `<path d="M17 36c22 11 64 11 86-1" fill="none" stroke="#c99a62" stroke-width="8"/><path d="M24 36c5-20 18-30 36-30s31 11 37 30c-22 8-50 8-73 0Z" fill="#f7d7a6" ${wornInk}/><path d="M17 36c22 10 64 10 86-1" fill="none" stroke="#f0bd78" stroke-width="4"/><g fill="#f59aaa" ${wornInk}><circle cx="31" cy="30" r="8"/><circle cx="46" cy="37" r="8"/><circle cx="63" cy="38" r="8"/><circle cx="79" cy="32" r="8"/></g><g fill="#ffe07a"><circle cx="31" cy="30" r="2.5"/><circle cx="46" cy="37" r="2.5"/><circle cx="63" cy="38" r="2.5"/><circle cx="79" cy="32" r="2.5"/></g>`,
+    "flower-hat": `<path d="M18 39C34 28 46 25 60 26s28 4 43 15" fill="none" stroke="#6f9d73" stroke-width="4" stroke-linecap="round"/><path d="M29 34c-8-9-15-5-12 3 2 7 9 8 16 3M48 29c-5-10-13-8-13 0 0 7 7 10 14 7M75 30c5-10 13-8 13 0 0 7-7 10-14 7M91 36c8-9 15-5 12 3-2 7-9 8-16 3" fill="#8fc58f" ${wornInk}/><g fill="#f7a2ad" ${wornInk}><circle cx="27" cy="38" r="7"/><circle cx="43" cy="31" r="7"/><circle cx="60" cy="29" r="8"/><circle cx="77" cy="32" r="7"/><circle cx="94" cy="40" r="7"/></g><g fill="#ffe58a"><circle cx="27" cy="38" r="2.4"/><circle cx="43" cy="31" r="2.4"/><circle cx="60" cy="29" r="2.8"/><circle cx="77" cy="32" r="2.4"/><circle cx="94" cy="40" r="2.4"/></g>`,
     "beret": `<path d="M19 37c5-23 23-35 45-33 22 2 35 14 37 35-22 8-59 8-82-2Z" fill="#b99aca" ${wornInk}/><path d="M20 38c20 8 59 8 80 0" fill="none" stroke="#8e71a6" stroke-width="5"/><path d="M59 7c-1-5 2-8 7-8" fill="none" ${wornInk}/><path d="M34 22c15-8 31-9 45-4" fill="none" stroke="#dbc5e5" stroke-width="4"/>`,
     "nurse-cap": `<path d="M22 38c12-25 63-25 76 0l-8 15c-21-8-39-8-60 0Z" fill="#fffaf4" ${wornInk}/><path d="M28 40c20-7 44-7 64 0" fill="none" stroke="#ef9a96" stroke-width="5"/><path d="M60 20v17M51 28h18" fill="none" stroke="#ef7f83" stroke-width="6"/>`,
     "party-hat": `<path d="m31 42 30-39 29 40c-19 7-40 7-59-1Z" fill="#f29aa0" ${wornInk}/><path d="m45 21 28 1M38 32l43 1" stroke="#f8d86e" stroke-width="6"/><circle cx="61" cy="4" r="7" fill="#f4c95f" ${wornInk}/><path d="M31 43c19 7 40 7 59 0" fill="none" ${wornInk}/><path d="M35 44c-3 19 5 31 17 37M86 44c3 18-5 30-17 37" fill="none" stroke="#d86f79" stroke-width="2"/>`,
@@ -68,12 +68,24 @@
     <path d="M27 143c0-34 12-51 33-51s33 17 33 51Z" fill="#ddb58e" ${wornInk}/>
     <ellipse cx="43" cy="139" rx="15" ry="8" fill="#edc89f"/><ellipse cx="77" cy="139" rx="15" ry="8" fill="#edc89f"/>`;
 
+  // ソファは相棒を前後から包む二層構造で、実際に座って見えるようにする。
+  const roomArt = {
+    "soft-cushion": {
+      back: `<path d="M18 132V53C18 23 39 8 70 8h100c31 0 52 15 52 45v79Z" fill="#f3b9b4" ${wornInk}/><path d="M36 112V56c0-19 14-31 35-31h98c21 0 35 12 35 31v56Z" fill="#ffd6d0" ${wornInk}/><path d="M120 26v86" fill="none" stroke="#eaa29f" stroke-width="3"/><circle cx="83" cy="65" r="4" fill="#fff1e8"/><circle cx="157" cy="65" r="4" fill="#fff1e8"/>`,
+      front: `<path d="M8 82c0-13 10-24 23-24h8c13 0 23 11 23 24v54H8Z" fill="#ef9e9b" ${wornInk}/><path d="M178 82c0-13 10-24 23-24h8c13 0 23 11 23 24v54h-54Z" fill="#ef9e9b" ${wornInk}/><path d="M39 111h162v29H39Z" fill="#f2aaa7" ${wornInk}/><path d="M48 140v8M192 140v8" fill="none" stroke="#765b50" stroke-width="6"/><path d="M51 119h138" fill="none" stroke="#ffd6d0" stroke-width="4"/>`
+    }
+  };
+
   window.renderRewardArt = (itemId, context = "icon") => {
     if (context === "worn" && wornArt[itemId]) {
       return `<svg class="reward-art reward-art-worn" viewBox="0 0 120 145" aria-hidden="true" focusable="false">${wornArt[itemId]}</svg>`;
     }
     if (context === "preview" && wornArt[itemId]) {
       return `<svg class="reward-art reward-art-preview" viewBox="0 0 120 145" aria-hidden="true" focusable="false">${petBase}${wornArt[itemId]}</svg>`;
+    }
+    if ((context === "room-back" || context === "room-front") && roomArt[itemId]) {
+      const body = context === "room-back" ? roomArt[itemId].back : roomArt[itemId].front;
+      return `<svg class="reward-art reward-art-room" viewBox="0 0 240 150" aria-hidden="true" focusable="false">${body}</svg>`;
     }
     const body = art[itemId];
     if (!body) return "";
